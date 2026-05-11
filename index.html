@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="theme-color" content="#ffb3d1" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="default" />
+<meta name="apple-mobile-web-app-title" content="Larain ✨" />
+<title>Larain's Daily Check-In 🌸</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'Quicksand', sans-serif;
+    background: linear-gradient(135deg, #ffd9e8 0%, #ffe5f1 40%, #fff0e6 100%);
+    min-height: 100vh;
+    color: #5d3a52;
+    padding: 24px 16px 60px;
+    overflow-x: hidden;
+  }
+
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(60px);
+    opacity: 0.5;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .blob1 { background: #ffb3d1; width: 280px; height: 280px; top: -80px; right: -80px; }
+  .blob2 { background: #ffd6a5; width: 220px; height: 220px; bottom: 40px; left: -60px; }
+  .blob3 { background: #e0bbff; width: 180px; height: 180px; top: 40%; right: -40px; opacity: 0.35; }
+
+  .container {
+    max-width: 460px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  header { text-align: center; margin-bottom: 28px; }
+
+  .greeting {
+    font-family: 'Caveat', cursive;
+    font-size: 44px;
+    color: #d4477e;
+    line-height: 1;
+    margin-bottom: 6px;
+    text-shadow: 0 2px 4px rgba(212, 71, 126, 0.15);
+  }
+
+  .date {
+    font-size: 14px;
+    color: #a06a8c;
+    letter-spacing: 0.5px;
+    font-weight: 500;
+  }
+
+  .streak-banner {
+    background: linear-gradient(135deg, #ff9ec7 0%, #ffb88c 100%);
+    border-radius: 22px;
+    padding: 16px 20px;
+    margin-bottom: 24px;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 8px 24px rgba(255, 158, 199, 0.4);
+  }
+
+  .streak-banner .label { font-size: 13px; opacity: 0.95; font-weight: 500; }
+  .streak-banner .count { font-size: 28px; font-weight: 700; margin-top: 2px; }
+  .streak-banner .fire { font-size: 38px; }
+
+  .card {
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border-radius: 22px;
+    padding: 18px 20px;
+    margin-bottom: 14px;
+    box-shadow: 0 4px 16px rgba(212, 71, 126, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.6);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .card:active { transform: scale(0.98); }
+
+  .card.done {
+    background: linear-gradient(135deg, rgba(255, 220, 232, 0.9), rgba(255, 230, 215, 0.9));
+    box-shadow: 0 6px 20px rgba(212, 71, 126, 0.2);
+  }
+
+  .card-row { display: flex; align-items: center; gap: 14px; }
+
+  .emoji {
+    font-size: 36px;
+    width: 56px;
+    height: 56px;
+    background: white;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(212, 71, 126, 0.12);
+    flex-shrink: 0;
+  }
+
+  .card-text { flex: 1; }
+  .card-title { font-size: 16px; font-weight: 600; color: #5d3a52; margin-bottom: 2px; }
+  .card-sub { font-size: 12.5px; color: #a06a8c; font-weight: 500; }
+
+  .check {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    border: 2.5px solid #f4b8d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+    background: white;
+  }
+  .check svg { opacity: 0; transition: opacity 0.2s ease; }
+  .card.done .check {
+    background: linear-gradient(135deg, #ff7eb3, #ff9ec7);
+    border-color: transparent;
+  }
+  .card.done .check svg { opacity: 1; }
+
+  .summary {
+    text-align: center;
+    margin-top: 28px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.6);
+    border-radius: 22px;
+    backdrop-filter: blur(8px);
+  }
+  .summary .msg {
+    font-family: 'Caveat', cursive;
+    font-size: 26px;
+    color: #d4477e;
+    line-height: 1.2;
+  }
+  .summary .sub {
+    font-size: 13px;
+    color: #a06a8c;
+    margin-top: 4px;
+    font-weight: 500;
+  }
+
+  .history-title {
+    font-size: 13px;
+    color: #a06a8c;
+    text-align: center;
+    margin: 28px 0 12px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    text-transform: uppercase;
+  }
+
+  .week-strip {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 6px;
+  }
+  .day-cell {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 14px;
+    padding: 8px 4px;
+    text-align: center;
+    font-size: 11px;
+    color: #a06a8c;
+    font-weight: 600;
+  }
+  .day-cell .dot {
+    width: 24px;
+    height: 24px;
+    margin: 4px auto 0;
+    border-radius: 50%;
+    background: white;
+    border: 2px solid #f4b8d2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    color: #d4477e;
+  }
+  .day-cell.full .dot {
+    background: linear-gradient(135deg, #ff7eb3, #ff9ec7);
+    border-color: transparent;
+    color: white;
+  }
+  .day-cell.partial .dot {
+    background: linear-gradient(135deg, #ffd6e8, #ffe5d9);
+    border-color: #f4b8d2;
+  }
+  .day-cell.today { box-shadow: 0 0 0 2px #ff7eb3; }
+
+  .footer-note {
+    text-align: center;
+    margin-top: 32px;
+    font-family: 'Caveat', cursive;
+    font-size: 22px;
+    color: #d4477e;
+    opacity: 0.85;
+  }
+
+  .heart {
+    display: inline-block;
+    animation: beat 1.5s ease-in-out infinite;
+  }
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+  }
+
+  .confetti {
+    position: fixed;
+    pointer-events: none;
+    font-size: 24px;
+    z-index: 100;
+    animation: fall 2.5s ease-out forwards;
+  }
+  @keyframes fall {
+    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+  <div class="blob blob1"></div>
+  <div class="blob blob2"></div>
+  <div class="blob blob3"></div>
+
+  <div class="container">
+    <header>
+      <div class="greeting">hi larain ✨</div>
+      <div class="date" id="date"></div>
+    </header>
+
+    <div class="streak-banner">
+      <div>
+        <div class="label">your streak</div>
+        <div class="count" id="streak">0 days</div>
+      </div>
+      <div class="fire">🔥</div>
+    </div>
+
+    <div id="cards-container"></div>
+
+    <div class="summary" id="summary" style="display:none;">
+      <div class="msg" id="summaryMsg"></div>
+      <div class="sub" id="summarySub"></div>
+    </div>
+
+    <div class="history-title">this week</div>
+    <div class="week-strip" id="weekStrip"></div>
+
+    <div class="footer-note">made with <span class="heart">💗</span> for you</div>
+  </div>
+
+<script>
+  const HABITS = [
+    { id: 'water',    emoji: '💧', title: 'Enough water at the dorm',     sub: 'bottles stocked & ready' },
+    { id: 'freezer',  emoji: '🍲', title: 'Moved food to the fridge',     sub: 'tomorrow-you says thanks' },
+    { id: 'homework', emoji: '📚', title: 'Did your homework',            sub: 'small wins, big brain' },
+  ];
+
+  const STORAGE_KEY = 'larain-tracker-v1';
+
+  const todayKey = () => {
+    const d = new Date();
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  };
+
+  const formatDate = () => new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+
+  function loadAll() {
+    try {
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
+    } catch { return {}; }
+  }
+  function saveAll(data) {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+  }
+  function getDay(key) {
+    const all = loadAll();
+    return all[key] || { water: false, freezer: false, homework: false };
+  }
+  function setDay(key, data) {
+    const all = loadAll();
+    all[key] = data;
+    saveAll(all);
+  }
+
+  function computeStreak() {
+    let streak = 0;
+    const today = new Date();
+    for (let i = 0; i < 365; i++) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      const data = getDay(key);
+      const all = data.water && data.freezer && data.homework;
+      if (all) { streak++; }
+      else { if (i === 0) continue; else break; }
+    }
+    return streak;
+  }
+
+  function loadWeek() {
+    const today = new Date();
+    const days = [];
+    for (let i = 6; i >= 0; i--) {
+      const d = new Date(today);
+      d.setDate(today.getDate() - i);
+      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+      days.push({ key, date: d, data: getDay(key) });
+    }
+    return days;
+  }
+
+  const cardsContainer = document.getElementById('cards-container');
+  const summaryEl = document.getElementById('summary');
+  const summaryMsg = document.getElementById('summaryMsg');
+  const summarySub = document.getElementById('summarySub');
+
+  let todayData = getDay(todayKey());
+
+  function confetti() {
+    const emojis = ['💖', '✨', '🌸', '💕', '🌷', '⭐'];
+    for (let i = 0; i < 20; i++) {
+      const el = document.createElement('div');
+      el.className = 'confetti';
+      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+      el.style.left = Math.random() * 100 + 'vw';
+      el.style.top = '-30px';
+      el.style.animationDelay = (Math.random() * 0.5) + 's';
+      el.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 4000);
+    }
+  }
+
+  function renderCards() {
+    cardsContainer.innerHTML = '';
+    HABITS.forEach(h => {
+      const isDone = todayData[h.id];
+      const card = document.createElement('div');
+      card.className = 'card' + (isDone ? ' done' : '');
+      card.innerHTML = `
+        <div class="card-row">
+          <div class="emoji">${h.emoji}</div>
+          <div class="card-text">
+            <div class="card-title">${h.title}</div>
+            <div class="card-sub">${h.sub}</div>
+          </div>
+          <div class="check">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </div>
+        </div>
+      `;
+      card.addEventListener('click', () => {
+        const wasAllDone = todayData.water && todayData.freezer && todayData.homework;
+        todayData[h.id] = !todayData[h.id];
+        setDay(todayKey(), todayData);
+        renderCards();
+        renderSummary();
+        const nowAllDone = todayData.water && todayData.freezer && todayData.homework;
+        if (!wasAllDone && nowAllDone) confetti();
+        refreshStreakAndWeek();
+      });
+      cardsContainer.appendChild(card);
+    });
+  }
+
+  function renderSummary() {
+    const count = Object.values(todayData).filter(Boolean).length;
+    if (count === 0) { summaryEl.style.display = 'none'; return; }
+    summaryEl.style.display = 'block';
+    if (count === 3) {
+      summaryMsg.textContent = "you did it all today! 🌟";
+      summarySub.textContent = "proud of you. go rest, queen.";
+    } else if (count === 2) {
+      summaryMsg.textContent = "almost there ✨";
+      summarySub.textContent = "one more little thing!";
+    } else {
+      summaryMsg.textContent = "good start 🌷";
+      summarySub.textContent = "every check-in counts";
+    }
+  }
+
+  function refreshStreakAndWeek() {
+    const streak = computeStreak();
+    document.getElementById('streak').textContent = streak === 1 ? '1 day' : `${streak} days`;
+    renderWeek(loadWeek());
+  }
+
+  function renderWeek(days) {
+    const strip = document.getElementById('weekStrip');
+    strip.innerHTML = '';
+    const todayK = todayKey();
+    days.forEach(({ key, date, data }) => {
+      const count = (data.water?1:0) + (data.freezer?1:0) + (data.homework?1:0);
+      const cls = count === 3 ? 'full' : count > 0 ? 'partial' : '';
+      const isToday = key === todayK;
+      const letter = date.toLocaleDateString('en-US', { weekday: 'short' })[0];
+      const cell = document.createElement('div');
+      cell.className = `day-cell ${cls} ${isToday ? 'today' : ''}`;
+      cell.innerHTML = `${letter}<div class="dot">${count === 3 ? '✓' : count || ''}</div>`;
+      strip.appendChild(cell);
+    });
+  }
+
+  document.getElementById('date').textContent = formatDate();
+  renderCards();
+  renderSummary();
+  refreshStreakAndWeek();
+</script>
+</body>
+</html>
