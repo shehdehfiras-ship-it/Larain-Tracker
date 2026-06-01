@@ -310,7 +310,7 @@
 
 <script>
   const HABITS = [
-    { id: 'water',    emoji: '💧', title: 'Enough water at the dorm',     sub: 'bottles stocked & ready' },
+    { id: 'skincare', emoji: '✨', title: 'Did your skincare',            sub: 'glow up for yourself' },
     { id: 'freezer',  emoji: '🍲', title: 'Moved food to the fridge',     sub: 'tomorrow-you says thanks' },
     { id: 'homework', emoji: '📚', title: 'Did your homework',            sub: 'small wins, big brain' },
   ];
@@ -334,7 +334,7 @@
   }
   function getDay(key) {
     const all = loadAll();
-    return all[key] || { water: false, freezer: false, homework: false };
+    return all[key] || { skincare: false, freezer: false, homework: false };
   }
   function setDay(key, data) {
     const all = loadAll();
@@ -350,7 +350,7 @@
       d.setDate(today.getDate() - i);
       const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
       const data = getDay(key);
-      const all = data.water && data.freezer && data.homework;
+      const all = data.skincare && data.freezer && data.homework;
       if (all) { streak++; }
       else { if (i === 0) continue; else break; }
     }
@@ -412,12 +412,12 @@
         </div>
       `;
       card.addEventListener('click', () => {
-        const wasAllDone = todayData.water && todayData.freezer && todayData.homework;
+        const wasAllDone = todayData.skincare && todayData.freezer && todayData.homework;
         todayData[h.id] = !todayData[h.id];
         setDay(todayKey(), todayData);
         renderCards();
         renderSummary();
-        const nowAllDone = todayData.water && todayData.freezer && todayData.homework;
+        const nowAllDone = todayData.skincare && todayData.freezer && todayData.homework;
         if (!wasAllDone && nowAllDone) confetti();
         refreshStreakAndWeek();
       });
@@ -452,7 +452,7 @@
     strip.innerHTML = '';
     const todayK = todayKey();
     days.forEach(({ key, date, data }) => {
-      const count = (data.water?1:0) + (data.freezer?1:0) + (data.homework?1:0);
+      const count = (data.skincare?1:0) + (data.freezer?1:0) + (data.homework?1:0);
       const cls = count === 3 ? 'full' : count > 0 ? 'partial' : '';
       const isToday = key === todayK;
       const letter = date.toLocaleDateString('en-US', { weekday: 'short' })[0];
