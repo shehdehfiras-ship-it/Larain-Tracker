@@ -384,9 +384,31 @@
     }
   }
 
-  function playClickSound() {
+  // Sound configurations for each habit
+  const soundConfigs = {
+    skincare: {
+      checkFreq: 600,      // Checked: medium-high tone
+      uncheckFreq: 400,    // Unchecked: lower tone
+      duration: 0.15
+    },
+    freezer: {
+      checkFreq: 800,      // Checked: high tone
+      uncheckFreq: 500,    // Unchecked: mid tone
+      duration: 0.15
+    },
+    homework: {
+      checkFreq: 1000,     // Checked: highest tone
+      uncheckFreq: 600,    // Unchecked: medium tone
+      duration: 0.15
+    }
+  };
+
+  function playHabitSound(habitId, isChecking) {
     try {
       initAudio();
+      const config = soundConfigs[habitId];
+      if (!config) return;
+
       const now = audioContext.currentTime;
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
@@ -394,13 +416,18 @@
       osc.connect(gain);
       gain.connect(audioContext.destination);
       
-      osc.frequency.setValueAtTime(800, now);
-      osc.frequency.exponentialRampToValueAtTime(400, now + 0.1);
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+      // Use different frequencies based on whether checking or unchecking
+      const startFreq = isChecking ? config.checkFreq : config.uncheckFreq;
+      const endFreq = isChecking ? config.checkFreq * 1.2 : config.uncheckFreq * 0.8;
+      
+      osc.frequency.setValueAtTime(startFreq, now);
+      osc.frequency.exponentialRampToValueAtTime(endFreq, now + config.duration);
+      
+      gain.gain.setValueAtTime(0.25, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + config.duration);
       
       osc.start(now);
-      osc.stop(now + 0.1);
+      osc.stop(now + config.duration);
     } catch (e) {
       console.log('Audio playback not available');
     }
@@ -442,8 +469,9 @@
         </div>
       `;
       card.addEventListener('click', () => {
-        playClickSound();
         const wasAllDone = todayData.skincare && todayData.freezer && todayData.homework;
+        const isChecking = !todayData[h.id];
+        playHabitSound(h.id, isChecking);
         todayData[h.id] = !todayData[h.id];
         setDay(todayKey(), todayData);
         renderCards();
