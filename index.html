@@ -883,6 +883,9 @@
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
+    if (audioContext.state === 'suspended') {
+      audioContext.resume();
+    }
   }
 
   function playTone(kind = "check") {
@@ -904,8 +907,8 @@
       gain.connect(audioContext.destination);
       osc.start(now);
       osc.stop(now + 0.14);
-    } catch {
-      // Some browsers block audio until the first user gesture.
+    } catch (e) {
+      console.error('Audio playback failed:', e);
     }
   }
 
@@ -942,6 +945,7 @@
       `;
 
       button.addEventListener("click", () => {
+        initAudio();
         todayData.mood = todayData.mood === mood.id ? "" : mood.id;
         setDay(todayKey(), todayData);
         playTone("mood");
@@ -978,6 +982,7 @@
       `;
 
       card.addEventListener("click", () => {
+        initAudio();
         const wasComplete = isComplete(todayData);
         const isChecking = !todayData[habit.id];
 
