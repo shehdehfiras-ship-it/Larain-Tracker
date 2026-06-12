@@ -675,15 +675,39 @@
   };
 
   const LOVE_NOTES = [
-    "I hope today is gentle with you. I am proud of every little check.",
-    "You do not have to be perfect today. Just cared for.",
-    "Tiny steps still count, and I notice them.",
-    "Drink water, be soft with yourself, and remember I adore you.",
-    "You are doing better than your brain is giving you credit for.",
-    "One checkbox at a time, my favorite girl.",
-    "I am on your team today and every day.",
+    "I care about you more than a checkbox could ever say.",
+    "Loving you is the easiest thing I do.",
+    "I trust you always, even on the days you doubt yourself.",
+    "You make ordinary days feel softer just by being in them.",
+    "I am proud of you for trying, resting, and starting again.",
+    "You are safe with me, in the loud days and the quiet ones.",
+    "I believe in you without needing you to prove anything first.",
+    "You are my favorite thought in the middle of a busy day.",
+    "I love the way your heart notices little things.",
+    "You do not have to be perfect to be deeply loved.",
+    "I am cheering for you in every tiny step.",
+    "You are stronger than the version of you that gets tired.",
+    "I hope today treats you gently, because you deserve gentle things.",
+    "I love being on your team.",
+    "You make me want to be softer, kinder, and better.",
+    "I trust your heart and I trust your pace.",
+    "You are doing better than your worried thoughts say you are.",
+    "I love you in the easy moments and the messy ones too.",
+    "You are not behind. You are becoming.",
+    "I am grateful for you in ways I still do not know how to explain.",
+    "Even your smallest wins matter to me.",
+    "I hope you remember that you are loved before you do anything today.",
+    "You have a light that does not disappear when you are tired.",
+    "I am proud of the way you keep going.",
+    "You are allowed to take up space, ask for care, and be soft.",
+    "I love your mind, your effort, and your little everyday magic.",
+    "You are my peace, even when the day is not peaceful.",
+    "I trust us, and I trust you.",
+    "Every day, I find another reason to adore you.",
+    "You are loved on purpose, not by accident.",
   ];
 
+  const NOTE_SWITCH_HOUR = 8;
   const STORAGE_KEY = "larain-tracker-v1";
   const habitIds = HABITS.map((habit) => habit.id);
 
@@ -774,13 +798,41 @@
   }
 
   function noteForToday() {
-    const key = todayKey();
+    const cycleDate = noteCycleDate();
+    const key = keyForDate(cycleDate);
     if (DATED_NOTES[key]) return DATED_NOTES[key];
 
-    const start = new Date(new Date().getFullYear(), 0, 0);
-    const diff = new Date() - start;
+    const start = new Date(cycleDate.getFullYear(), 0, 0);
+    const diff = cycleDate - start;
     const dayOfYear = Math.floor(diff / 86400000);
     return LOVE_NOTES[dayOfYear % LOVE_NOTES.length];
+  }
+
+  function noteCycleDate() {
+    const now = new Date();
+    const cycleDate = new Date(now);
+
+    if (now.getHours() < NOTE_SWITCH_HOUR) {
+      cycleDate.setDate(cycleDate.getDate() - 1);
+    }
+
+    cycleDate.setHours(0, 0, 0, 0);
+    return cycleDate;
+  }
+
+  function scheduleNoteRefresh() {
+    const now = new Date();
+    const nextSwitch = new Date(now);
+    nextSwitch.setHours(NOTE_SWITCH_HOUR, 0, 1, 0);
+
+    if (now >= nextSwitch) {
+      nextSwitch.setDate(nextSwitch.getDate() + 1);
+    }
+
+    window.setTimeout(() => {
+      loveNoteEl.textContent = noteForToday();
+      scheduleNoteRefresh();
+    }, nextSwitch - now);
   }
 
   function initAudio() {
@@ -1036,6 +1088,7 @@
 
   dateEl.textContent = formatDate();
   loveNoteEl.textContent = noteForToday();
+  scheduleNoteRefresh();
   tinyWinEl.addEventListener("input", (event) => saveTinyWin(event.target.value));
   renderAll();
 </script>
