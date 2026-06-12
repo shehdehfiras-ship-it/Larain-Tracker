@@ -745,10 +745,10 @@
   ];
 
   const CYCLE_WEEKS = [
-    { id: "period", emoji: "🌧️", label: "week 1", short: "period", detail: "Rest, warmth, snacks, and zero pressure." },
-    { id: "follicular", emoji: "🌱", label: "week 2", short: "fresh", detail: "Gentle momentum, fresh starts, and easy wins." },
-    { id: "ovulation", emoji: "☀️", label: "week 3", short: "bright", detail: "Confidence, connection, and being seen." },
-    { id: "luteal", emoji: "🌙", label: "week 4", short: "soft", detail: "Extra patience, tenderness, and fewer expectations." },
+    { id: "period", emoji: "🌧️", label: "cozy", short: "week 1", detail: "Cozy week: rest, warmth, snacks, and zero pressure." },
+    { id: "follicular", emoji: "🌱", label: "bloom", short: "week 2", detail: "Bloom week: gentle momentum, fresh starts, and easy wins." },
+    { id: "ovulation", emoji: "☀️", label: "radiant", short: "week 3", detail: "Radiant week: confidence, connection, and being seen." },
+    { id: "luteal", emoji: "🌙", label: "nest", short: "week 4", detail: "Nest week: extra patience, tenderness, and fewer expectations." },
   ];
 
   const DATED_NOTES = {
@@ -1035,7 +1035,7 @@
 
   function renderCycle() {
     const selectedCycle = CYCLE_WEEKS.find((cycle) => cycle.id === todayData.cycleWeek);
-    cycleSelectedEl.textContent = selectedCycle ? `${selectedCycle.emoji} ${selectedCycle.short}` : "not picked yet";
+    cycleSelectedEl.textContent = selectedCycle ? `${selectedCycle.emoji} ${selectedCycle.label}` : "not picked yet";
     cycleDetailEl.textContent = selectedCycle
       ? selectedCycle.detail
       : "Pick this only if you want the note to match your body week.";
@@ -1213,7 +1213,7 @@
         <span>${weekday}</span>
         <span class="day-dot">${count === HABITS.length ? "✓" : count || ""}</span>
         <span class="day-mood">${mood ? mood.emoji : ""}</span>
-        <span class="day-cycle">${cycle ? cycle.short.slice(0, 1).toUpperCase() : ""}</span>
+        <span class="day-cycle">${cycle ? cycle.label.slice(0, 1).toUpperCase() : ""}</span>
       `;
       weekStripEl.appendChild(cell);
     });
