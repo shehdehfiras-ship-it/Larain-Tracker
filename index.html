@@ -938,6 +938,7 @@
       button.setAttribute("aria-label", `Today feels ${mood.label}`);
       button.innerHTML = `
         <span class="mood-emoji" aria-hidden="true">${mood.emoji}</span>
+        <span class="mood-name">${mood.label}</span>
       `;
 
       button.addEventListener("click", () => {
@@ -998,191 +999,130 @@
     const count = completedCount(todayData);
     const percent = Math.round((count / HABITS.length) * 100);
 
+    dateEl.textContent = formatDate();
     progressNumberEl.textContent = `${count}/${HABITS.length}`;
     progressFillEl.style.width = `${percent}%`;
 
     if (count === 0) {
       progressCopyEl.textContent = "Pick one tiny thing first.";
-    } else if (count === HABITS.length) {
-      progressCopyEl.textContent = "All done. You took care of yourself today.";
+    } else if (count < HABITS.length) {
+      progressCopyEl.textContent = `${HABITS.length - count} more to go, you've got this.`;
     } else {
-      progressCopyEl.textContent = `${HABITS.length - count} little ${HABITS.length - count === 1 ? "thing" : "things"} left.`;
+      progressCopyEl.textContent = "You nailed it today!";
     }
 
-    const streak = computeStreak();
-    streakEl.textContent = streak === 1 ? "1 day" : `${streak} days`;
-    streakSubEl.textContent = streak > 0 ? "Look at you showing up." : "A soft restart still counts.";
-  }
-
-  function renderSummary() {
-    const count = completedCount(todayData);
-    const mood = MOODS.find((item) => item.id === todayData.mood);
-
-    if (count === 0 && !mood) {
-      summaryEl.classList.remove("is-visible");
-      return;
-    }
-
-    summaryEl.classList.add("is-visible");
-
-    if (count === HABITS.length) {
-      summaryMsgEl.textContent = "you did it all today 🌟";
-      summarySubEl.textContent = mood
-        ? "And you checked in with yourself. I am proud of you."
-        : "Proud of you. Go rest, queen.";
-    } else if (count === 2) {
-      summaryMsgEl.textContent = "almost there ✨";
-      summarySubEl.textContent = mood
-        ? "Two checks on this kind of day is very real."
-        : "One more little thing, only if you have it in you.";
-    } else if (count === 1) {
-      summaryMsgEl.textContent = "good start 🌷";
-      summarySubEl.textContent = mood
-        ? "A day like this still deserves softness."
-        : "One check-in is still care.";
-    } else {
-      summaryMsgEl.textContent = `${mood.emoji} day`;
-      summarySubEl.textContent = "No pressure. Just a little check-in with yourself.";
-    }
-  }
-
-  function computeStreak() {
+    const all = loadAll();
     let streak = 0;
-    const today = new Date();
+    let checkingDate = new Date();
+    checkingDate.setDate(checkingDate.getDate() - 1);
 
-    for (let i = 0; i < 365; i += 1) {
-      const day = new Date(today);
-      day.setDate(today.getDate() - i);
-      const data = getDay(keyForDate(day));
+    while (true) {
+      const dayKey = keyForDate(checkingDate);
+      const dayData = normalizeDay(all[dayKey]);
 
-      if (isComplete(data)) {
+      if (isComplete(dayData)) {
         streak += 1;
-      } else if (i > 0) {
+        checkingDate.setDate(checkingDate.getDate() - 1);
+      } else {
         break;
       }
     }
 
-    return streak;
-  }
-
-  function loadWeek() {
-    const today = new Date();
-    const days = [];
-
-    for (let i = 6; i >= 0; i -= 1) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      const key = keyForDate(date);
-      days.push({ key, date, data: getDay(key) });
+    if (streak === 0) {
+      streakEl.textContent = "0 days";
+      streakSubEl.textContent = "A soft restart still counts.";
+    } else if (streak === 1) {
+      streakEl.textContent = "1 day";
+      streakSubEl.textContent = "You are on a roll. Keep going.";
+    } else {
+      streakEl.textContent = `${streak} days`;
+      streakSubEl.textContent = "You are building something beautiful.";
     }
 
-    return days;
+    const isCompleteToday = isComplete(todayData);
+    summaryEl.classList.toggle("is-visible", isCompleteToday);
+    if (isCompleteToday) {
+      summaryMsgEl.textContent = "You did it today 🎀";
+      summarySubEl.textContent = "Rest easy. Tomorrow is another chance to shine.";
+    }
   }
 
   function renderWeek() {
-    const days = loadWeek();
-    const today = todayKey();
-    const totalChecks = days.reduce((sum, day) => sum + completedCount(day.data), 0);
-
-    weekScoreEl.textContent = `${totalChecks} ${totalChecks === 1 ? "check" : "checks"}`;
     weekStripEl.innerHTML = "";
+    const all = loadAll();
+    let totalChecks = 0;
+    const today = new Date();
 
-    days.forEach(({ key, date, data }) => {
-      const count = completedCount(data);
-      const mood = MOODS.find((item) => item.id === data.mood);
+    for (let i = 6; i >= 0; i -= 1) {
+      const date = new Date(today);
+      date.setDate(date.getDate() - i);
+      const dayKey = keyForDate(date);
+      const dayData = normalizeDay(all[dayKey]);
+      const isToday = i === 0;
+      const count = completedCount(dayData);
+
       const cell = document.createElement("div");
-      const status = count === HABITS.length ? "full" : count > 0 ? "partial" : "";
-      const weekday = date.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 1);
-
-      cell.className = `day-cell ${status}${key === today ? " today" : ""}`;
+      cell.className = `day-cell${isToday ? " today" : ""}${count === 0 ? "" : count === HABITS.length ? " full" : " partial"}`;
       cell.innerHTML = `
-        <span>${weekday}</span>
-        <span class="day-dot">${count === HABITS.length ? "✓" : count || ""}</span>
-        <span class="day-mood">${mood ? mood.emoji : ""}</span>
+        <div class="day-dot">${count}${count === HABITS.length ? "" : ""}</div>
+        <div class="day-mood">${dayData.mood ? MOODS.find((m) => m.id === dayData.mood)?.emoji || "" : ""}</div>
+        <span>${["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"][date.getDay()]}</span>
       `;
       weekStripEl.appendChild(cell);
-    });
-  }
 
-  function renderMessageToFiras() {
-    if (document.activeElement !== tinyWinEl) {
-      tinyWinEl.value = todayData.messageToFiras || "";
-    }
-  }
-
-  function saveMessageToFiras(value) {
-    todayData.messageToFiras = value.trimStart();
-    todayData.tinyWin = todayData.messageToFiras;
-    setDay(todayKey(), todayData);
-    saveStateEl.textContent = "saved here";
-    window.clearTimeout(saveTimer);
-    saveTimer = window.setTimeout(() => {
-      saveStateEl.textContent = "";
-    }, 1300);
-    renderWeek();
-  }
-
-  function buildFirasUpdate() {
-    const mood = MOODS.find((item) => item.id === todayData.mood);
-    const streak = computeStreak();
-    const doneHabits = HABITS
-      .filter((habit) => todayData[habit.id])
-      .map((habit) => habit.title)
-      .join(", ");
-
-    return [
-      `Larain's check-in for ${formatDate()}`,
-      `Mood: ${mood ? `${mood.emoji} ${mood.label}` : "not picked"}`,
-      `Streak: ${streak === 1 ? "1 day" : `${streak} days`}`,
-      `Checks: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : ""}`,
-      `Message to Firas: ${todayData.messageToFiras || "(empty)"}`,
-    ].join("\n");
-  }
-
-  async function shareUpdateForFiras() {
-    const text = buildFirasUpdate();
-
-    try {
-      if (navigator.share) {
-        await navigator.share({ title: "Larain's check-in", text });
-        saveStateEl.textContent = "shared";
-      } else if (navigator.clipboard) {
-        await navigator.clipboard.writeText(text);
-        saveStateEl.textContent = "copied for Firas";
-      } else {
-        const helper = document.createElement("textarea");
-        helper.value = text;
-        document.body.appendChild(helper);
-        helper.select();
-        document.execCommand("copy");
-        helper.remove();
-        saveStateEl.textContent = "copied for Firas";
+      if (count === HABITS.length) {
+        totalChecks += 1;
       }
-    } catch {
-      saveStateEl.textContent = "copy did not work";
     }
 
-    window.clearTimeout(saveTimer);
-    saveTimer = window.setTimeout(() => {
-      saveStateEl.textContent = "";
-    }, 1800);
+    weekScoreEl.textContent = `${totalChecks} check${totalChecks === 1 ? "" : "s"}`;
   }
 
   function renderAll() {
+    todayData = getDay(todayKey());
     renderOverview();
     renderMood();
     renderCards();
-    renderSummary();
-    renderMessageToFiras();
     renderWeek();
   }
 
-  dateEl.textContent = formatDate();
-  loveNoteEl.textContent = noteForToday();
-  scheduleNoteRefresh();
-  tinyWinEl.addEventListener("input", (event) => saveMessageToFiras(event.target.value));
-  shareButtonEl.addEventListener("click", shareUpdateForFiras);
-  renderAll();
+  function attachTinyWinListeners() {
+    tinyWinEl.addEventListener("input", () => {
+      todayData.tinyWin = tinyWinEl.value;
+      clearTimeout(saveTimer);
+      saveTimer = window.setTimeout(() => {
+        setDay(todayKey(), todayData);
+        saveStateEl.textContent = "saved ✓";
+        window.setTimeout(() => {
+          saveStateEl.textContent = "";
+        }, 2400);
+      }, 400);
+    });
+
+    shareButtonEl.addEventListener("click", async () => {
+      const message = `${tinyWinEl.value || "(no message)"}`;
+      try {
+        await navigator.clipboard.writeText(message);
+        saveStateEl.textContent = "copied ✓";
+        window.setTimeout(() => {
+          saveStateEl.textContent = "";
+        }, 2400);
+      } catch {
+        saveStateEl.textContent = "couldn't copy";
+        window.setTimeout(() => {
+          saveStateEl.textContent = "";
+        }, 2400);
+      }
+    });
+  }
+
+  document.addEventListener("DOMContentLoaded", () => {
+    renderAll();
+    attachTinyWinListeners();
+    scheduleNoteRefresh();
+    loveNoteEl.textContent = noteForToday();
+    tinyWinEl.value = todayData.tinyWin || "";
+  });
 </script>
 </body>
 </html>
