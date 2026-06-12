@@ -3,529 +3,1041 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<meta name="theme-color" content="#ffb3d1" />
+<meta name="theme-color" content="#ffdce8" />
 <meta name="apple-mobile-web-app-capable" content="yes" />
 <meta name="apple-mobile-web-app-status-bar-style" content="default" />
 <meta name="apple-mobile-web-app-title" content="Larain ✨" />
 <title>Larain's Daily Check-In 🌸</title>
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
-<link href="https://fonts.googleapis.com/css2?family=Quicksand:wght@400;500;600;700&family=Caveat:wght@600;700&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Quicksand:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --ink: #4f394a;
+    --muted: #8b6a7f;
+    --pink: #ff7eae;
+    --pink-soft: #ffe0eb;
+    --rose: #d84f7f;
+    --peach: #ffd2a6;
+    --mint: #cdeee6;
+    --mint-strong: #82c8bb;
+    --lavender: #e4d7ff;
+    --cream: #fffaf5;
+    --paper: rgba(255, 255, 255, 0.82);
+    --line: rgba(216, 79, 127, 0.18);
+    --shadow: 0 16px 40px rgba(117, 62, 91, 0.14);
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    min-height: 100%;
+  }
 
   body {
-    font-family: 'Quicksand', sans-serif;
-    background: linear-gradient(135deg, #ffd9e8 0%, #ffe5f1 40%, #fff0e6 100%);
+    margin: 0;
     min-height: 100vh;
-    color: #5d3a52;
-    padding: 24px 16px 60px;
+    padding: 24px 14px 56px;
     overflow-x: hidden;
+    color: var(--ink);
+    font-family: "Quicksand", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background:
+      linear-gradient(120deg, rgba(255, 255, 255, 0.55) 0 1px, transparent 1px 72px),
+      linear-gradient(150deg, #fff8f2 0%, #ffe9f2 42%, #edf8f5 100%);
   }
 
-  .blob {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(60px);
-    opacity: 0.5;
-    z-index: 0;
-    pointer-events: none;
+  button,
+  textarea {
+    font: inherit;
   }
-  .blob1 { background: #ffb3d1; width: 280px; height: 280px; top: -80px; right: -80px; }
-  .blob2 { background: #ffd6a5; width: 220px; height: 220px; bottom: 40px; left: -60px; }
-  .blob3 { background: #e0bbff; width: 180px; height: 180px; top: 40%; right: -40px; opacity: 0.35; }
 
-  .container {
-    max-width: 460px;
+  button {
+    color: inherit;
+  }
+
+  .app-shell {
+    width: min(100%, 520px);
     margin: 0 auto;
-    position: relative;
-    z-index: 1;
   }
 
-  header { text-align: center; margin-bottom: 28px; }
+  .hero {
+    position: relative;
+    padding: 12px 2px 18px;
+    text-align: center;
+  }
 
-  .greeting {
-    font-family: 'Caveat', cursive;
-    font-size: 44px;
-    color: #d4477e;
-    line-height: 1;
-    margin-bottom: 6px;
-    text-shadow: 0 2px 4px rgba(212, 71, 126, 0.15);
+  .eyebrow {
+    margin-bottom: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+  }
+
+  h1 {
+    margin: 0;
+    color: var(--rose);
+    font-family: "Caveat", cursive;
+    font-size: 48px;
+    line-height: 0.98;
+    text-shadow: 0 2px 0 rgba(255, 255, 255, 0.85);
   }
 
   .date {
+    margin-top: 8px;
+    color: var(--muted);
     font-size: 14px;
-    color: #a06a8c;
-    letter-spacing: 0.5px;
-    font-weight: 500;
+    font-weight: 600;
   }
 
-  .streak-banner {
-    background: linear-gradient(135deg, #ff9ec7 0%, #ffb88c 100%);
-    border-radius: 22px;
-    padding: 16px 20px;
-    margin-bottom: 24px;
-    color: white;
+  .love-note {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 14px;
+    align-items: start;
+    margin: 8px 0 14px;
+    padding: 16px;
+    border: 1px solid rgba(216, 79, 127, 0.2);
+    border-radius: 8px;
+    background:
+      linear-gradient(90deg, rgba(255, 126, 174, 0.1), rgba(130, 200, 187, 0.12)),
+      var(--paper);
+    box-shadow: var(--shadow);
+  }
+
+  .note-icon,
+  .habit-emoji {
+    display: grid;
+    place-items: center;
+    width: 48px;
+    height: 48px;
+    border: 1px solid rgba(216, 79, 127, 0.14);
+    border-radius: 8px;
+    background: #ffffff;
+    box-shadow: 0 8px 20px rgba(117, 62, 91, 0.1);
+    font-size: 27px;
+  }
+
+  .note-kicker {
+    color: var(--rose);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .note-text {
+    margin: 5px 0 0;
+    color: var(--ink);
+    font-family: "Caveat", cursive;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.14;
+  }
+
+  .note-signoff {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+  }
+
+  .today-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .mini-panel,
+  .summary,
+  .mood-card,
+  .tiny-win,
+  .week-panel {
+    border: 1px solid rgba(255, 255, 255, 0.72);
+    border-radius: 8px;
+    background: var(--paper);
+    box-shadow: 0 10px 26px rgba(117, 62, 91, 0.1);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+  }
+
+  .mini-panel {
+    min-height: 112px;
+    padding: 14px;
+  }
+
+  .panel-label {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .streak-count {
+    margin-top: 8px;
+    color: var(--rose);
+    font-size: 28px;
+    font-weight: 800;
+    line-height: 1;
+  }
+
+  .streak-sub,
+  .progress-copy {
+    margin-top: 6px;
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.35;
+  }
+
+  .progress-number {
+    margin-top: 8px;
+    color: var(--ink);
+    font-size: 22px;
+    font-weight: 800;
+  }
+
+  .progress-track {
+    height: 9px;
+    margin-top: 10px;
+    overflow: hidden;
+    border-radius: 999px;
+    background: rgba(216, 79, 127, 0.13);
+  }
+
+  .progress-fill {
+    width: 0%;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, var(--pink), var(--mint-strong));
+    transition: width 250ms ease;
+  }
+
+  .mood-card {
+    margin-bottom: 14px;
+    padding: 14px;
+  }
+
+  .mood-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 8px 24px rgba(255, 158, 199, 0.4);
+    gap: 10px;
+    margin-bottom: 12px;
   }
 
-  .streak-banner .label { font-size: 13px; opacity: 0.95; font-weight: 500; }
-  .streak-banner .count { font-size: 28px; font-weight: 700; margin-top: 2px; }
-  .streak-banner .fire { font-size: 38px; }
+  .mood-selected {
+    color: var(--rose);
+    font-size: 13px;
+    font-weight: 800;
+  }
 
-  .card {
-    background: rgba(255, 255, 255, 0.75);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 22px;
-    padding: 18px 20px;
-    margin-bottom: 14px;
-    box-shadow: 0 4px 16px rgba(212, 71, 126, 0.1);
-    border: 1px solid rgba(255, 255, 255, 0.6);
-    transition: all 0.3s ease;
+  .mood-options {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .mood-button {
+    min-height: 72px;
+    padding: 9px 6px;
+    border: 1px solid rgba(216, 79, 127, 0.16);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.68);
     cursor: pointer;
-    user-select: none;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+  }
+
+  .mood-button:hover,
+  .habit-card:hover {
+    transform: translateY(-1px);
+  }
+
+  .mood-button[aria-pressed="true"] {
+    border-color: rgba(216, 79, 127, 0.5);
+    background: linear-gradient(135deg, rgba(255, 224, 235, 0.92), rgba(205, 238, 230, 0.86));
+    box-shadow: 0 8px 18px rgba(117, 62, 91, 0.12);
+  }
+
+  .mood-emoji {
+    display: block;
+    font-size: 24px;
+  }
+
+  .mood-name {
+    display: block;
+    margin-top: 4px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
+  .habit-list {
+    display: grid;
+    gap: 10px;
+  }
+
+  .habit-card {
+    width: 100%;
+    padding: 14px;
+    border: 1px solid rgba(255, 255, 255, 0.74);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.78);
+    box-shadow: 0 10px 24px rgba(117, 62, 91, 0.1);
+    cursor: pointer;
+    text-align: left;
+    transition: transform 180ms ease, border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
     -webkit-tap-highlight-color: transparent;
   }
 
-  .card:active { transform: scale(0.98); }
-
-  .card.done {
-    background: linear-gradient(135deg, rgba(255, 220, 232, 0.9), rgba(255, 230, 215, 0.9));
-    box-shadow: 0 6px 20px rgba(212, 71, 126, 0.2);
+  .habit-card:active,
+  .mood-button:active {
+    transform: scale(0.99);
   }
 
-  .card-row { display: flex; align-items: center; gap: 14px; }
+  .habit-card.done {
+    border-color: rgba(130, 200, 187, 0.45);
+    background: linear-gradient(135deg, rgba(255, 233, 242, 0.94), rgba(230, 248, 244, 0.94));
+    box-shadow: 0 14px 28px rgba(117, 62, 91, 0.13);
+  }
 
-  .emoji {
-    font-size: 36px;
-    width: 56px;
-    height: 56px;
-    background: white;
-    border-radius: 16px;
-    display: flex;
+  .habit-row {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    gap: 12px;
     align-items: center;
-    justify-content: center;
-    box-shadow: 0 2px 8px rgba(212, 71, 126, 0.12);
-    flex-shrink: 0;
   }
 
-  .card-text { flex: 1; }
-  .card-title { font-size: 16px; font-weight: 600; color: #5d3a52; margin-bottom: 2px; }
-  .card-sub { font-size: 12.5px; color: #a06a8c; font-weight: 500; }
-
-  .check {
-    width: 32px;
-    height: 32px;
-    border-radius: 50%;
-    border: 2.5px solid #f4b8d2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: all 0.3s ease;
-    flex-shrink: 0;
-    background: white;
-  }
-  .check svg { opacity: 0; transition: opacity 0.2s ease; }
-  .card.done .check {
-    background: linear-gradient(135deg, #ff7eb3, #ff9ec7);
-    border-color: transparent;
-  }
-  .card.done .check svg { opacity: 1; }
-
-  .summary {
-    text-align: center;
-    margin-top: 28px;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.6);
-    border-radius: 22px;
-    backdrop-filter: blur(8px);
-  }
-  .summary .msg {
-    font-family: 'Caveat', cursive;
-    font-size: 26px;
-    color: #d4477e;
+  .habit-title {
+    margin: 0 0 3px;
+    color: var(--ink);
+    font-size: 16px;
+    font-weight: 800;
     line-height: 1.2;
   }
-  .summary .sub {
-    font-size: 13px;
-    color: #a06a8c;
-    margin-top: 4px;
-    font-weight: 500;
-  }
 
-  .test-motivation {
-    text-align: center;
-    margin-top: 28px;
-    margin-bottom: 24px;
-    padding: 24px 20px;
-    background: linear-gradient(135deg, rgba(255, 158, 199, 0.4), rgba(255, 213, 232, 0.4));
-    border-radius: 22px;
-    backdrop-filter: blur(8px);
-    border: 1.5px solid rgba(255, 158, 199, 0.6);
-    animation: fadeInScale 0.8s ease-out;
-  }
-
-  .test-motivation .msg {
-    font-family: 'Caveat', cursive;
-    font-size: 36px;
-    color: #d4477e;
-    line-height: 1.3;
-    font-weight: 700;
-    animation: bounce 2s ease-in-out infinite;
-  }
-
-  @keyframes fadeInScale {
-    0% {
-      opacity: 0;
-      transform: scale(0.85);
-    }
-    100% {
-      opacity: 1;
-      transform: scale(1);
-    }
-  }
-
-  @keyframes bounce {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-8px); }
-  }
-
-  .history-title {
-    font-size: 13px;
-    color: #a06a8c;
-    text-align: center;
-    margin: 28px 0 12px;
+  .habit-sub {
+    margin: 0;
+    color: var(--muted);
+    font-size: 12.5px;
     font-weight: 600;
-    letter-spacing: 0.8px;
+    line-height: 1.3;
+  }
+
+  .check {
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    border: 2px solid rgba(216, 79, 127, 0.28);
+    border-radius: 999px;
+    background: #ffffff;
+    color: #ffffff;
+    flex: 0 0 auto;
+    transition: background 180ms ease, border-color 180ms ease;
+  }
+
+  .habit-card.done .check {
+    border-color: transparent;
+    background: linear-gradient(135deg, var(--pink), var(--mint-strong));
+  }
+
+  .check svg {
+    opacity: 0;
+    transition: opacity 160ms ease;
+  }
+
+  .habit-card.done .check svg {
+    opacity: 1;
+  }
+
+  .summary {
+    display: none;
+    margin-top: 14px;
+    padding: 16px;
+    text-align: center;
+  }
+
+  .summary.is-visible {
+    display: block;
+  }
+
+  .summary-msg {
+    color: var(--rose);
+    font-family: "Caveat", cursive;
+    font-size: 31px;
+    font-weight: 700;
+    line-height: 1.06;
+  }
+
+  .summary-sub {
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+    line-height: 1.35;
+  }
+
+  .tiny-win {
+    margin-top: 14px;
+    padding: 14px;
+  }
+
+  .tiny-win label {
+    display: block;
+    color: var(--rose);
+    font-size: 13px;
+    font-weight: 800;
     text-transform: uppercase;
+  }
+
+  .tiny-win textarea {
+    width: 100%;
+    min-height: 78px;
+    margin-top: 10px;
+    padding: 12px;
+    resize: vertical;
+    border: 1px solid rgba(216, 79, 127, 0.18);
+    border-radius: 8px;
+    outline: none;
+    background: rgba(255, 255, 255, 0.72);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.45;
+  }
+
+  .tiny-win textarea:focus {
+    border-color: rgba(216, 79, 127, 0.52);
+    box-shadow: 0 0 0 3px rgba(255, 126, 174, 0.16);
+  }
+
+  .save-state {
+    min-height: 18px;
+    margin-top: 7px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 700;
+  }
+
+  .week-panel {
+    margin-top: 14px;
+    padding: 14px;
+  }
+
+  .week-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 12px;
+  }
+
+  .week-title {
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .week-score {
+    color: var(--rose);
+    font-size: 13px;
+    font-weight: 800;
   }
 
   .week-strip {
     display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 6px;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 7px;
   }
+
   .day-cell {
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 14px;
-    padding: 8px 4px;
+    min-width: 0;
+    min-height: 66px;
+    padding: 8px 3px;
+    border: 1px solid rgba(216, 79, 127, 0.13);
+    border-radius: 8px;
+    background: rgba(255, 255, 255, 0.58);
+    color: var(--muted);
     text-align: center;
     font-size: 11px;
-    color: #a06a8c;
-    font-weight: 600;
+    font-weight: 800;
   }
-  .day-cell .dot {
-    width: 24px;
-    height: 24px;
-    margin: 4px auto 0;
-    border-radius: 50%;
-    background: white;
-    border: 2px solid #f4b8d2;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+
+  .day-cell.today {
+    border-color: rgba(216, 79, 127, 0.45);
+    box-shadow: inset 0 0 0 1px rgba(216, 79, 127, 0.22);
+  }
+
+  .day-dot {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    margin: 5px auto 0;
+    border: 1px solid rgba(216, 79, 127, 0.18);
+    border-radius: 999px;
+    background: #ffffff;
+    color: var(--rose);
     font-size: 11px;
-    color: #d4477e;
   }
-  .day-cell.full .dot {
-    background: linear-gradient(135deg, #ff7eb3, #ff9ec7);
+
+  .day-cell.partial .day-dot {
+    background: var(--pink-soft);
+  }
+
+  .day-cell.full .day-dot {
     border-color: transparent;
-    color: white;
+    background: linear-gradient(135deg, var(--pink), var(--mint-strong));
+    color: #ffffff;
   }
-  .day-cell.partial .dot {
-    background: linear-gradient(135deg, #ffd6e8, #ffe5d9);
-    border-color: #f4b8d2;
+
+  .day-mood {
+    display: block;
+    height: 17px;
+    margin-top: 3px;
+    font-size: 13px;
   }
-  .day-cell.today { box-shadow: 0 0 0 2px #ff7eb3; }
 
   .footer-note {
+    margin-top: 24px;
+    color: var(--rose);
+    font-family: "Caveat", cursive;
+    font-size: 25px;
+    font-weight: 700;
     text-align: center;
-    margin-top: 32px;
-    font-family: 'Caveat', cursive;
-    font-size: 22px;
-    color: #d4477e;
-    opacity: 0.85;
   }
 
   .heart {
     display: inline-block;
-    animation: beat 1.5s ease-in-out infinite;
-  }
-  @keyframes beat {
-    0%, 100% { transform: scale(1); }
-    50% { transform: scale(1.15); }
+    transform-origin: center;
+    animation: beat 1.7s ease-in-out infinite;
   }
 
   .confetti {
     position: fixed;
+    top: -28px;
+    z-index: 20;
     pointer-events: none;
     font-size: 24px;
-    z-index: 100;
-    animation: fall 2.5s ease-out forwards;
+    animation: fall 2600ms ease-out forwards;
   }
+
+  @keyframes beat {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.14); }
+  }
+
   @keyframes fall {
-    0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
-    100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+    0% {
+      opacity: 1;
+      transform: translateY(-20px) rotate(0deg);
+    }
+    100% {
+      opacity: 0;
+      transform: translateY(105vh) rotate(640deg);
+    }
+  }
+
+  @media (max-width: 430px) {
+    body {
+      padding: 18px 10px 46px;
+    }
+
+    h1 {
+      font-size: 42px;
+    }
+
+    .today-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .mood-options {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .love-note {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+
+    .note-icon {
+      margin: 0 auto;
+    }
+
+    .habit-row {
+      grid-template-columns: auto 1fr auto;
+      gap: 10px;
+    }
+
+    .note-text {
+      font-size: 26px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      scroll-behavior: auto !important;
+      animation-duration: 0.001ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.001ms !important;
+    }
   }
 </style>
 </head>
 <body>
-  <div class="blob blob1"></div>
-  <div class="blob blob2"></div>
-  <div class="blob blob3"></div>
-
-  <div class="container">
-    <header>
-      <div class="greeting">hi larain ✨</div>
+  <main class="app-shell">
+    <header class="hero">
+      <div class="eyebrow">today's little ritual</div>
+      <h1>hi larain ✨</h1>
       <div class="date" id="date"></div>
     </header>
 
-    <div class="streak-banner">
+    <section class="love-note" aria-label="A little note from me">
+      <div class="note-icon" aria-hidden="true">💌</div>
       <div>
-        <div class="label">your streak</div>
-        <div class="count" id="streak">0 days</div>
+        <div class="note-kicker">a little note from me</div>
+        <p class="note-text" id="loveNote"></p>
+        <div class="note-signoff">always cheering for you</div>
       </div>
-      <div class="fire">🔥</div>
-    </div>
+    </section>
 
-    <div id="cards-container"></div>
+    <section class="today-grid" aria-label="Today overview">
+      <div class="mini-panel">
+        <div class="panel-label">streak</div>
+        <div class="streak-count" id="streak">0 days</div>
+        <div class="streak-sub" id="streakSub">A soft restart still counts.</div>
+      </div>
 
-    <div class="summary" id="summary" style="display:none;">
-      <div class="msg" id="summaryMsg"></div>
-      <div class="sub" id="summarySub"></div>
-    </div>
+      <div class="mini-panel">
+        <div class="panel-label">today</div>
+        <div class="progress-number" id="progressNumber">0/3</div>
+        <div class="progress-track" aria-hidden="true">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+        <div class="progress-copy" id="progressCopy">Pick one tiny thing first.</div>
+      </div>
+    </section>
 
-    <div class="test-motivation">
-      <div class="msg">i care about you 💗</div>
-    </div>
+    <section class="mood-card" aria-label="Mood check-in">
+      <div class="mood-head">
+        <div class="panel-label">today feels</div>
+        <div class="mood-selected" id="moodSelected">not picked yet</div>
+      </div>
+      <div class="mood-options" id="moodOptions"></div>
+    </section>
 
-    <div class="history-title">this week</div>
-    <div class="week-strip" id="weekStrip"></div>
+    <section class="habit-list" id="cardsContainer" aria-label="Daily check-in list"></section>
+
+    <section class="summary" id="summary" aria-live="polite">
+      <div class="summary-msg" id="summaryMsg"></div>
+      <div class="summary-sub" id="summarySub"></div>
+    </section>
+
+    <section class="tiny-win">
+      <label for="tinyWin">today's tiny win</label>
+      <textarea id="tinyWin" maxlength="180" placeholder="one little thing you did, felt, tried, or survived"></textarea>
+      <div class="save-state" id="saveState" aria-live="polite"></div>
+    </section>
+
+    <section class="week-panel" aria-label="This week">
+      <div class="week-head">
+        <div class="week-title">this week</div>
+        <div class="week-score" id="weekScore">0 checks</div>
+      </div>
+      <div class="week-strip" id="weekStrip"></div>
+    </section>
 
     <div class="footer-note">made with <span class="heart">💗</span> for you</div>
-  </div>
+  </main>
 
 <script>
   const HABITS = [
-    { id: 'skincare', emoji: '✨', title: 'Did your skincare',            sub: 'glow up for yourself' },
-    { id: 'freezer',  emoji: '🍲', title: 'Moved food to the fridge',     sub: 'tomorrow-you says thanks' },
-    { id: 'homework', emoji: '📚', title: 'Did your homework',            sub: 'small wins, big brain' },
+    { id: "skincare", emoji: "✨", title: "Skincare glow", sub: "a little reset for your face and your mood" },
+    { id: "freezer", emoji: "🍲", title: "Food moved to the fridge", sub: "future Larain gets taken care of" },
+    { id: "homework", emoji: "📚", title: "Homework touchpoint", sub: "even a small start is a real start" },
   ];
 
-  const STORAGE_KEY = 'larain-tracker-v1';
+  const MOODS = [
+    { id: "sparkly", emoji: "🌸", label: "sparkly" },
+    { id: "soft", emoji: "🫧", label: "soft" },
+    { id: "tired", emoji: "🌙", label: "tired" },
+    { id: "brave", emoji: "🧸", label: "brave" },
+  ];
 
-  const todayKey = () => {
-    const d = new Date();
-    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  const DATED_NOTES = {
+    // Add a date like "2026-06-14": "Your message for that day.",
   };
 
-  const formatDate = () => new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' });
+  const LOVE_NOTES = [
+    "I hope today is gentle with you. I am proud of every little check.",
+    "You do not have to be perfect today. Just cared for.",
+    "Tiny steps still count, and I notice them.",
+    "Drink water, be soft with yourself, and remember I adore you.",
+    "You are doing better than your brain is giving you credit for.",
+    "One checkbox at a time, my favorite girl.",
+    "I am on your team today and every day.",
+  ];
+
+  const STORAGE_KEY = "larain-tracker-v1";
+  const habitIds = HABITS.map((habit) => habit.id);
+
+  const dateEl = document.getElementById("date");
+  const loveNoteEl = document.getElementById("loveNote");
+  const streakEl = document.getElementById("streak");
+  const streakSubEl = document.getElementById("streakSub");
+  const progressNumberEl = document.getElementById("progressNumber");
+  const progressFillEl = document.getElementById("progressFill");
+  const progressCopyEl = document.getElementById("progressCopy");
+  const moodOptionsEl = document.getElementById("moodOptions");
+  const moodSelectedEl = document.getElementById("moodSelected");
+  const cardsContainerEl = document.getElementById("cardsContainer");
+  const summaryEl = document.getElementById("summary");
+  const summaryMsgEl = document.getElementById("summaryMsg");
+  const summarySubEl = document.getElementById("summarySub");
+  const tinyWinEl = document.getElementById("tinyWin");
+  const saveStateEl = document.getElementById("saveState");
+  const weekStripEl = document.getElementById("weekStrip");
+  const weekScoreEl = document.getElementById("weekScore");
+
+  let audioContext;
+  let saveTimer;
+  let todayData = getDay(todayKey());
+
+  function defaultDay() {
+    return {
+      skincare: false,
+      freezer: false,
+      homework: false,
+      mood: "",
+      tinyWin: "",
+    };
+  }
+
+  function keyForDate(date) {
+    return [
+      date.getFullYear(),
+      String(date.getMonth() + 1).padStart(2, "0"),
+      String(date.getDate()).padStart(2, "0"),
+    ].join("-");
+  }
+
+  function todayKey() {
+    return keyForDate(new Date());
+  }
+
+  function formatDate() {
+    return new Date().toLocaleDateString("en-US", {
+      weekday: "long",
+      month: "long",
+      day: "numeric",
+    });
+  }
 
   function loadAll() {
     try {
-      return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}');
-    } catch { return {}; }
+      return JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+    } catch {
+      return {};
+    }
   }
+
   function saveAll(data) {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
   }
-  function getDay(key) {
-    const all = loadAll();
-    return all[key] || { skincare: false, freezer: false, homework: false };
+
+  function normalizeDay(day) {
+    return { ...defaultDay(), ...(day || {}) };
   }
+
+  function getDay(key) {
+    return normalizeDay(loadAll()[key]);
+  }
+
   function setDay(key, data) {
     const all = loadAll();
-    all[key] = data;
+    all[key] = normalizeDay(data);
     saveAll(all);
   }
 
-  function computeStreak() {
-    let streak = 0;
-    const today = new Date();
-    for (let i = 0; i < 365; i++) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      const data = getDay(key);
-      const all = data.skincare && data.freezer && data.homework;
-      if (all) { streak++; }
-      else { if (i === 0) continue; else break; }
-    }
-    return streak;
+  function completedCount(data) {
+    return habitIds.reduce((count, id) => count + (data[id] ? 1 : 0), 0);
   }
 
-  function loadWeek() {
-    const today = new Date();
-    const days = [];
-    for (let i = 6; i >= 0; i--) {
-      const d = new Date(today);
-      d.setDate(today.getDate() - i);
-      const key = `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
-      days.push({ key, date: d, data: getDay(key) });
-    }
-    return days;
+  function isComplete(data) {
+    return completedCount(data) === HABITS.length;
   }
 
-  const cardsContainer = document.getElementById('cards-container');
-  const summaryEl = document.getElementById('summary');
-  const summaryMsg = document.getElementById('summaryMsg');
-  const summarySub = document.getElementById('summarySub');
+  function noteForToday() {
+    const key = todayKey();
+    if (DATED_NOTES[key]) return DATED_NOTES[key];
 
-  let todayData = getDay(todayKey());
+    const start = new Date(new Date().getFullYear(), 0, 0);
+    const diff = new Date() - start;
+    const dayOfYear = Math.floor(diff / 86400000);
+    return LOVE_NOTES[dayOfYear % LOVE_NOTES.length];
+  }
 
-  // Audio context for click sound
-  let audioContext;
   function initAudio() {
     if (!audioContext) {
       audioContext = new (window.AudioContext || window.webkitAudioContext)();
     }
   }
 
-  // Sound configurations for each habit
-  const soundConfigs = {
-    skincare: {
-      checkFreq: 600,      // Checked: medium-high tone
-      uncheckFreq: 400,    // Unchecked: lower tone
-      duration: 0.15
-    },
-    freezer: {
-      checkFreq: 800,      // Checked: high tone
-      uncheckFreq: 500,    // Unchecked: mid tone
-      duration: 0.15
-    },
-    homework: {
-      checkFreq: 1000,     // Checked: highest tone
-      uncheckFreq: 600,    // Unchecked: medium tone
-      duration: 0.15
-    }
-  };
-
-  function playHabitSound(habitId, isChecking) {
+  function playTone(kind = "check") {
     try {
       initAudio();
-      const config = soundConfigs[habitId];
-      if (!config) return;
-
       const now = audioContext.currentTime;
       const osc = audioContext.createOscillator();
       const gain = audioContext.createGain();
-      
+      const start = kind === "mood" ? 520 : kind === "uncheck" ? 360 : 680;
+      const end = kind === "uncheck" ? 300 : start * 1.22;
+
+      osc.type = "sine";
+      osc.frequency.setValueAtTime(start, now);
+      osc.frequency.exponentialRampToValueAtTime(end, now + 0.13);
+      gain.gain.setValueAtTime(0.12, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.14);
+
       osc.connect(gain);
       gain.connect(audioContext.destination);
-      
-      // Use different frequencies based on whether checking or unchecking
-      const startFreq = isChecking ? config.checkFreq : config.uncheckFreq;
-      const endFreq = isChecking ? config.checkFreq * 1.2 : config.uncheckFreq * 0.8;
-      
-      osc.frequency.setValueAtTime(startFreq, now);
-      osc.frequency.exponentialRampToValueAtTime(endFreq, now + config.duration);
-      
-      gain.gain.setValueAtTime(0.25, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + config.duration);
-      
       osc.start(now);
-      osc.stop(now + config.duration);
-    } catch (e) {
-      console.log('Audio playback not available');
+      osc.stop(now + 0.14);
+    } catch {
+      // Some browsers block audio until the first user gesture.
     }
   }
 
   function confetti() {
-    const emojis = ['💖', '✨', '🌸', '💕', '🌷', '⭐'];
-    for (let i = 0; i < 20; i++) {
-      const el = document.createElement('div');
-      el.className = 'confetti';
-      el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      el.style.left = Math.random() * 100 + 'vw';
-      el.style.top = '-30px';
-      el.style.animationDelay = (Math.random() * 0.5) + 's';
-      el.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+    const pieces = ["💗", "✨", "🌸", "💌", "🫧", "🌷"];
+
+    for (let i = 0; i < 22; i += 1) {
+      const el = document.createElement("div");
+      el.className = "confetti";
+      el.textContent = pieces[Math.floor(Math.random() * pieces.length)];
+      el.style.left = `${Math.random() * 100}vw`;
+      el.style.animationDelay = `${Math.random() * 0.45}s`;
+      el.style.animationDuration = `${2200 + Math.random() * 1200}ms`;
       document.body.appendChild(el);
-      setTimeout(() => el.remove(), 4000);
+      window.setTimeout(() => el.remove(), 3900);
     }
   }
 
+  function renderMood() {
+    const selectedMood = MOODS.find((mood) => mood.id === todayData.mood);
+    moodSelectedEl.textContent = selectedMood ? `${selectedMood.emoji} ${selectedMood.label}` : "not picked yet";
+    moodOptionsEl.innerHTML = "";
+
+    MOODS.forEach((mood) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "mood-button";
+      button.setAttribute("aria-pressed", String(todayData.mood === mood.id));
+      button.setAttribute("aria-label", `Today feels ${mood.label}`);
+      button.innerHTML = `
+        <span class="mood-emoji" aria-hidden="true">${mood.emoji}</span>
+        <span class="mood-name">${mood.label}</span>
+      `;
+
+      button.addEventListener("click", () => {
+        todayData.mood = todayData.mood === mood.id ? "" : mood.id;
+        setDay(todayKey(), todayData);
+        playTone("mood");
+        renderAll();
+      });
+
+      moodOptionsEl.appendChild(button);
+    });
+  }
+
   function renderCards() {
-    cardsContainer.innerHTML = '';
-    HABITS.forEach(h => {
-      const isDone = todayData[h.id];
-      const card = document.createElement('div');
-      card.className = 'card' + (isDone ? ' done' : '');
+    cardsContainerEl.innerHTML = "";
+
+    HABITS.forEach((habit) => {
+      const isDone = Boolean(todayData[habit.id]);
+      const card = document.createElement("button");
+      card.type = "button";
+      card.className = `habit-card${isDone ? " done" : ""}`;
+      card.setAttribute("aria-pressed", String(isDone));
+      card.setAttribute("aria-label", `${habit.title}: ${isDone ? "done" : "not done"}`);
       card.innerHTML = `
-        <div class="card-row">
-          <div class="emoji">${h.emoji}</div>
-          <div class="card-text">
-            <div class="card-title">${h.title}</div>
-            <div class="card-sub">${h.sub}</div>
+        <div class="habit-row">
+          <div class="habit-emoji" aria-hidden="true">${habit.emoji}</div>
+          <div>
+            <p class="habit-title">${habit.title}</p>
+            <p class="habit-sub">${habit.sub}</p>
           </div>
-          <div class="check">
+          <div class="check" aria-hidden="true">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round">
               <polyline points="20 6 9 17 4 12"></polyline>
             </svg>
           </div>
         </div>
       `;
-      card.addEventListener('click', () => {
-        const wasAllDone = todayData.skincare && todayData.freezer && todayData.homework;
-        const isChecking = !todayData[h.id];
-        playHabitSound(h.id, isChecking);
-        todayData[h.id] = !todayData[h.id];
+
+      card.addEventListener("click", () => {
+        const wasComplete = isComplete(todayData);
+        const isChecking = !todayData[habit.id];
+
+        todayData[habit.id] = isChecking;
         setDay(todayKey(), todayData);
-        renderCards();
-        renderSummary();
-        const nowAllDone = todayData.skincare && todayData.freezer && todayData.homework;
-        if (!wasAllDone && nowAllDone) confetti();
-        refreshStreakAndWeek();
+        playTone(isChecking ? "check" : "uncheck");
+        renderAll();
+
+        if (!wasComplete && isComplete(todayData)) {
+          confetti();
+        }
       });
-      cardsContainer.appendChild(card);
+
+      cardsContainerEl.appendChild(card);
     });
+  }
+
+  function renderOverview() {
+    const count = completedCount(todayData);
+    const percent = Math.round((count / HABITS.length) * 100);
+
+    progressNumberEl.textContent = `${count}/${HABITS.length}`;
+    progressFillEl.style.width = `${percent}%`;
+
+    if (count === 0) {
+      progressCopyEl.textContent = "Pick one tiny thing first.";
+    } else if (count === HABITS.length) {
+      progressCopyEl.textContent = "All done. You took care of yourself today.";
+    } else {
+      progressCopyEl.textContent = `${HABITS.length - count} little ${HABITS.length - count === 1 ? "thing" : "things"} left.`;
+    }
+
+    const streak = computeStreak();
+    streakEl.textContent = streak === 1 ? "1 day" : `${streak} days`;
+    streakSubEl.textContent = streak > 0 ? "Look at you showing up." : "A soft restart still counts.";
   }
 
   function renderSummary() {
-    const count = Object.values(todayData).filter(Boolean).length;
-    if (count === 0) { summaryEl.style.display = 'none'; return; }
-    summaryEl.style.display = 'block';
-    if (count === 3) {
-      summaryMsg.textContent = "you did it all today! 🌟";
-      summarySub.textContent = "proud of you. go rest, queen.";
+    const count = completedCount(todayData);
+    const mood = MOODS.find((item) => item.id === todayData.mood);
+
+    if (count === 0 && !mood) {
+      summaryEl.classList.remove("is-visible");
+      return;
+    }
+
+    summaryEl.classList.add("is-visible");
+
+    if (count === HABITS.length) {
+      summaryMsgEl.textContent = "you did it all today 🌟";
+      summarySubEl.textContent = mood
+        ? `And today felt ${mood.label}. I am proud of you.`
+        : "Proud of you. Go rest, queen.";
     } else if (count === 2) {
-      summaryMsg.textContent = "almost there ✨";
-      summarySub.textContent = "one more little thing!";
+      summaryMsgEl.textContent = "almost there ✨";
+      summarySubEl.textContent = mood
+        ? `Two checks on a ${mood.label} day is very real.`
+        : "One more little thing, only if you have it in you.";
+    } else if (count === 1) {
+      summaryMsgEl.textContent = "good start 🌷";
+      summarySubEl.textContent = mood
+        ? `A ${mood.label} day still gets a tiny win.`
+        : "One check-in is still care.";
     } else {
-      summaryMsg.textContent = "good start 🌷";
-      summarySub.textContent = "every check-in counts";
+      summaryMsgEl.textContent = `${mood.emoji} ${mood.label} day`;
+      summarySubEl.textContent = "No pressure. Just a little check-in with yourself.";
     }
   }
 
-  function refreshStreakAndWeek() {
-    const streak = computeStreak();
-    document.getElementById('streak').textContent = streak === 1 ? '1 day' : `${streak} days`;
-    renderWeek(loadWeek());
+  function computeStreak() {
+    let streak = 0;
+    const today = new Date();
+
+    for (let i = 0; i < 365; i += 1) {
+      const day = new Date(today);
+      day.setDate(today.getDate() - i);
+      const data = getDay(keyForDate(day));
+
+      if (isComplete(data)) {
+        streak += 1;
+      } else if (i > 0) {
+        break;
+      }
+    }
+
+    return streak;
   }
 
-  function renderWeek(days) {
-    const strip = document.getElementById('weekStrip');
-    strip.innerHTML = '';
-    const todayK = todayKey();
+  function loadWeek() {
+    const today = new Date();
+    const days = [];
+
+    for (let i = 6; i >= 0; i -= 1) {
+      const date = new Date(today);
+      date.setDate(today.getDate() - i);
+      const key = keyForDate(date);
+      days.push({ key, date, data: getDay(key) });
+    }
+
+    return days;
+  }
+
+  function renderWeek() {
+    const days = loadWeek();
+    const today = todayKey();
+    const totalChecks = days.reduce((sum, day) => sum + completedCount(day.data), 0);
+
+    weekScoreEl.textContent = `${totalChecks} ${totalChecks === 1 ? "check" : "checks"}`;
+    weekStripEl.innerHTML = "";
+
     days.forEach(({ key, date, data }) => {
-      const count = (data.skincare?1:0) + (data.freezer?1:0) + (data.homework?1:0);
-      const cls = count === 3 ? 'full' : count > 0 ? 'partial' : '';
-      const isToday = key === todayK;
-      const letter = date.toLocaleDateString('en-US', { weekday: 'short' })[0];
-      const cell = document.createElement('div');
-      cell.className = `day-cell ${cls} ${isToday ? 'today' : ''}`;
-      cell.innerHTML = `${letter}<div class="dot">${count === 3 ? '✓' : count || ''}</div>`;
-      strip.appendChild(cell);
+      const count = completedCount(data);
+      const mood = MOODS.find((item) => item.id === data.mood);
+      const cell = document.createElement("div");
+      const status = count === HABITS.length ? "full" : count > 0 ? "partial" : "";
+      const weekday = date.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 1);
+
+      cell.className = `day-cell ${status}${key === today ? " today" : ""}`;
+      cell.innerHTML = `
+        <span>${weekday}</span>
+        <span class="day-dot">${count === HABITS.length ? "✓" : count || ""}</span>
+        <span class="day-mood">${mood ? mood.emoji : ""}</span>
+      `;
+      weekStripEl.appendChild(cell);
     });
   }
 
-  document.getElementById('date').textContent = formatDate();
-  renderCards();
-  renderSummary();
-  refreshStreakAndWeek();
+  function renderTinyWin() {
+    if (document.activeElement !== tinyWinEl) {
+      tinyWinEl.value = todayData.tinyWin || "";
+    }
+  }
+
+  function saveTinyWin(value) {
+    todayData.tinyWin = value.trimStart();
+    setDay(todayKey(), todayData);
+    saveStateEl.textContent = "saved";
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(() => {
+      saveStateEl.textContent = "";
+    }, 1300);
+    renderWeek();
+  }
+
+  function renderAll() {
+    renderOverview();
+    renderMood();
+    renderCards();
+    renderSummary();
+    renderTinyWin();
+    renderWeek();
+  }
+
+  dateEl.textContent = formatDate();
+  loveNoteEl.textContent = noteForToday();
+  tinyWinEl.addEventListener("input", (event) => saveTinyWin(event.target.value));
+  renderAll();
 </script>
 </body>
 </html>
