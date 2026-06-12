@@ -264,7 +264,7 @@
 
   .mood-emoji {
     display: block;
-    font-size: 24px;
+    font-size: 32px;
   }
 
   .mood-name {
@@ -926,18 +926,18 @@
 
   function renderMood() {
     const selectedMood = MOODS.find((mood) => mood.id === todayData.mood);
-    moodSelectedEl.textContent = selectedMood ? `${selectedMood.emoji} ${selectedMood.label}` : "not picked yet";
+    moodSelectedEl.textContent = selectedMood ? selectedMood.emoji : "not picked yet";
     moodOptionsEl.innerHTML = "";
 
     MOODS.forEach((mood) => {
       const button = document.createElement("button");
       button.type = "button";
       button.className = "mood-button";
+      button.title = mood.label;
       button.setAttribute("aria-pressed", String(todayData.mood === mood.id));
       button.setAttribute("aria-label", `Today feels ${mood.label}`);
       button.innerHTML = `
         <span class="mood-emoji" aria-hidden="true">${mood.emoji}</span>
-        <span class="mood-name">${mood.label}</span>
       `;
 
       button.addEventListener("click", () => {
@@ -1028,20 +1028,20 @@
     if (count === HABITS.length) {
       summaryMsgEl.textContent = "you did it all today 🌟";
       summarySubEl.textContent = mood
-        ? `And today felt ${mood.label}. I am proud of you.`
+        ? "And you checked in with yourself. I am proud of you."
         : "Proud of you. Go rest, queen.";
     } else if (count === 2) {
       summaryMsgEl.textContent = "almost there ✨";
       summarySubEl.textContent = mood
-        ? `Two checks on a ${mood.label} day is very real.`
+        ? "Two checks on this kind of day is very real."
         : "One more little thing, only if you have it in you.";
     } else if (count === 1) {
       summaryMsgEl.textContent = "good start 🌷";
       summarySubEl.textContent = mood
-        ? `A ${mood.label} day still deserves softness.`
+        ? "A day like this still deserves softness."
         : "One check-in is still care.";
     } else {
-      summaryMsgEl.textContent = `${mood.emoji} ${mood.label} day`;
+      summaryMsgEl.textContent = `${mood.emoji} day`;
       summarySubEl.textContent = "No pressure. Just a little check-in with yourself.";
     }
   }
