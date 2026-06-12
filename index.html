@@ -154,6 +154,7 @@
   .mini-panel,
   .summary,
   .mood-card,
+  .cycle-card,
   .tiny-win,
   .week-panel {
     border: 1px solid rgba(255, 255, 255, 0.72);
@@ -216,12 +217,14 @@
     transition: width 250ms ease;
   }
 
-  .mood-card {
+  .mood-card,
+  .cycle-card {
     margin-bottom: 14px;
     padding: 14px;
   }
 
-  .mood-head {
+  .mood-head,
+  .cycle-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -229,19 +232,22 @@
     margin-bottom: 12px;
   }
 
-  .mood-selected {
+  .mood-selected,
+  .cycle-selected {
     color: var(--rose);
     font-size: 13px;
     font-weight: 800;
   }
 
-  .mood-options {
+  .mood-options,
+  .cycle-options {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 
-  .mood-button {
+  .mood-button,
+  .cycle-button {
     min-height: 72px;
     padding: 9px 6px;
     border: 1px solid rgba(216, 79, 127, 0.16);
@@ -252,27 +258,39 @@
   }
 
   .mood-button:hover,
+  .cycle-button:hover,
   .habit-card:hover {
     transform: translateY(-1px);
   }
 
-  .mood-button[aria-pressed="true"] {
+  .mood-button[aria-pressed="true"],
+  .cycle-button[aria-pressed="true"] {
     border-color: rgba(216, 79, 127, 0.5);
     background: linear-gradient(135deg, rgba(255, 224, 235, 0.92), rgba(205, 238, 230, 0.86));
     box-shadow: 0 8px 18px rgba(117, 62, 91, 0.12);
   }
 
-  .mood-emoji {
+  .mood-emoji,
+  .cycle-emoji {
     display: block;
     font-size: 24px;
   }
 
-  .mood-name {
+  .mood-name,
+  .cycle-name {
     display: block;
     margin-top: 4px;
     color: var(--ink);
     font-size: 12px;
     font-weight: 800;
+  }
+
+  .cycle-detail {
+    margin: 10px 0 0;
+    color: var(--muted);
+    font-size: 12.5px;
+    font-weight: 600;
+    line-height: 1.35;
   }
 
   .habit-list {
@@ -294,7 +312,8 @@
   }
 
   .habit-card:active,
-  .mood-button:active {
+  .mood-button:active,
+  .cycle-button:active {
     transform: scale(0.99);
   }
 
@@ -422,6 +441,30 @@
     font-weight: 700;
   }
 
+  .share-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 10px;
+  }
+
+  .share-button {
+    min-height: 40px;
+    padding: 0 14px;
+    border: 1px solid rgba(216, 79, 127, 0.22);
+    border-radius: 8px;
+    background: linear-gradient(135deg, rgba(255, 224, 235, 0.92), rgba(205, 238, 230, 0.86));
+    color: var(--ink);
+    font-size: 13px;
+    font-weight: 800;
+    cursor: pointer;
+  }
+
+  .share-button:active {
+    transform: scale(0.99);
+  }
+
   .week-panel {
     margin-top: 14px;
     padding: 14px;
@@ -502,6 +545,15 @@
     font-size: 13px;
   }
 
+  .day-cycle {
+    display: block;
+    min-height: 13px;
+    margin-top: 1px;
+    color: var(--muted);
+    font-size: 10px;
+    font-weight: 800;
+  }
+
   .footer-note {
     margin-top: 24px;
     color: var(--rose);
@@ -555,8 +607,18 @@
       grid-template-columns: 1fr;
     }
 
-    .mood-options {
+    .mood-options,
+    .cycle-options {
       grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .share-row {
+      align-items: stretch;
+      flex-direction: column;
+    }
+
+    .share-button {
+      width: 100%;
     }
 
     .love-note {
@@ -632,6 +694,15 @@
       <div class="mood-options" id="moodOptions"></div>
     </section>
 
+    <section class="cycle-card" aria-label="Cycle week check-in">
+      <div class="cycle-head">
+        <div class="panel-label">cycle week</div>
+        <div class="cycle-selected" id="cycleSelected">not picked yet</div>
+      </div>
+      <div class="cycle-options" id="cycleOptions"></div>
+      <p class="cycle-detail" id="cycleDetail">Pick this only if you want the note to match your body week.</p>
+    </section>
+
     <section class="habit-list" id="cardsContainer" aria-label="Daily check-in list"></section>
 
     <section class="summary" id="summary" aria-live="polite">
@@ -640,9 +711,12 @@
     </section>
 
     <section class="tiny-win">
-      <label for="tinyWin">today's tiny win</label>
-      <textarea id="tinyWin" maxlength="180" placeholder="one little thing you did, felt, tried, or survived"></textarea>
-      <div class="save-state" id="saveState" aria-live="polite"></div>
+      <label for="tinyWin">message to Firas</label>
+      <textarea id="tinyWin" maxlength="220" placeholder="write me anything you want me to know"></textarea>
+      <div class="share-row">
+        <button class="share-button" type="button" id="shareButton">Copy update for Firas</button>
+        <div class="save-state" id="saveState" aria-live="polite"></div>
+      </div>
     </section>
 
     <section class="week-panel" aria-label="This week">
@@ -668,6 +742,13 @@
     { id: "soft", emoji: "🫧", label: "soft" },
     { id: "tired", emoji: "🌙", label: "tired" },
     { id: "brave", emoji: "🧸", label: "brave" },
+  ];
+
+  const CYCLE_WEEKS = [
+    { id: "period", emoji: "🌧️", label: "week 1", short: "period", detail: "Rest, warmth, snacks, and zero pressure." },
+    { id: "follicular", emoji: "🌱", label: "week 2", short: "fresh", detail: "Gentle momentum, fresh starts, and easy wins." },
+    { id: "ovulation", emoji: "☀️", label: "week 3", short: "bright", detail: "Confidence, connection, and being seen." },
+    { id: "luteal", emoji: "🌙", label: "week 4", short: "soft", detail: "Extra patience, tenderness, and fewer expectations." },
   ];
 
   const DATED_NOTES = {
@@ -707,6 +788,37 @@
     "You are loved on purpose, not by accident.",
   ];
 
+  const CYCLE_NOTES = {
+    period: [
+      "If your body needs the softer version of today, I am still proud of you.",
+      "Rest counts. Warmth counts. Let today ask less from you.",
+      "You do not owe the day your strongest self.",
+      "I hope you feel held, cared for, and allowed to slow down.",
+      "Be extra gentle with yourself. I love you through every version of today.",
+    ],
+    follicular: [
+      "Fresh-start energy looks beautiful on you, even when it is tiny.",
+      "One small step is enough momentum for today.",
+      "I love watching you become excited about your own life.",
+      "Let today be light, curious, and kind to you.",
+      "You can begin again without carrying yesterday on your shoulders.",
+    ],
+    ovulation: [
+      "You are allowed to take up space and be fully seen.",
+      "Your brightness is one of my favorite things about you.",
+      "I love your confidence, your warmth, and the way you light up a room.",
+      "Go be your beautiful self. I am already cheering.",
+      "You are magnetic without even trying.",
+    ],
+    luteal: [
+      "If everything feels louder today, I will be softer with you.",
+      "You deserve patience before productivity.",
+      "Nothing about you is too much for me.",
+      "Let the day be smaller if it needs to be. You are still doing enough.",
+      "I trust your feelings, and I am here with you through them.",
+    ],
+  };
+
   const NOTE_SWITCH_HOUR = 8;
   const STORAGE_KEY = "larain-tracker-v1";
   const habitIds = HABITS.map((habit) => habit.id);
@@ -720,12 +832,16 @@
   const progressCopyEl = document.getElementById("progressCopy");
   const moodOptionsEl = document.getElementById("moodOptions");
   const moodSelectedEl = document.getElementById("moodSelected");
+  const cycleOptionsEl = document.getElementById("cycleOptions");
+  const cycleSelectedEl = document.getElementById("cycleSelected");
+  const cycleDetailEl = document.getElementById("cycleDetail");
   const cardsContainerEl = document.getElementById("cardsContainer");
   const summaryEl = document.getElementById("summary");
   const summaryMsgEl = document.getElementById("summaryMsg");
   const summarySubEl = document.getElementById("summarySub");
   const tinyWinEl = document.getElementById("tinyWin");
   const saveStateEl = document.getElementById("saveState");
+  const shareButtonEl = document.getElementById("shareButton");
   const weekStripEl = document.getElementById("weekStrip");
   const weekScoreEl = document.getElementById("weekScore");
 
@@ -739,6 +855,8 @@
       freezer: false,
       homework: false,
       mood: "",
+      cycleWeek: "",
+      messageToFiras: "",
       tinyWin: "",
     };
   }
@@ -776,7 +894,13 @@
   }
 
   function normalizeDay(day) {
-    return { ...defaultDay(), ...(day || {}) };
+    const normalized = { ...defaultDay(), ...(day || {}) };
+
+    if (!normalized.messageToFiras && normalized.tinyWin) {
+      normalized.messageToFiras = normalized.tinyWin;
+    }
+
+    return normalized;
   }
 
   function getDay(key) {
@@ -805,7 +929,9 @@
     const start = new Date(cycleDate.getFullYear(), 0, 0);
     const diff = cycleDate - start;
     const dayOfYear = Math.floor(diff / 86400000);
-    return LOVE_NOTES[dayOfYear % LOVE_NOTES.length];
+    const cycleNotes = CYCLE_NOTES[todayData.cycleWeek];
+    const notePool = cycleNotes || LOVE_NOTES;
+    return notePool[dayOfYear % notePool.length];
   }
 
   function noteCycleDate() {
@@ -907,6 +1033,37 @@
     });
   }
 
+  function renderCycle() {
+    const selectedCycle = CYCLE_WEEKS.find((cycle) => cycle.id === todayData.cycleWeek);
+    cycleSelectedEl.textContent = selectedCycle ? `${selectedCycle.emoji} ${selectedCycle.short}` : "not picked yet";
+    cycleDetailEl.textContent = selectedCycle
+      ? selectedCycle.detail
+      : "Pick this only if you want the note to match your body week.";
+    cycleOptionsEl.innerHTML = "";
+
+    CYCLE_WEEKS.forEach((cycle) => {
+      const button = document.createElement("button");
+      button.type = "button";
+      button.className = "cycle-button";
+      button.setAttribute("aria-pressed", String(todayData.cycleWeek === cycle.id));
+      button.setAttribute("aria-label", `Cycle ${cycle.label}: ${cycle.short}`);
+      button.innerHTML = `
+        <span class="cycle-emoji" aria-hidden="true">${cycle.emoji}</span>
+        <span class="cycle-name">${cycle.label}</span>
+      `;
+
+      button.addEventListener("click", () => {
+        todayData.cycleWeek = todayData.cycleWeek === cycle.id ? "" : cycle.id;
+        setDay(todayKey(), todayData);
+        loveNoteEl.textContent = noteForToday();
+        playTone("mood");
+        renderAll();
+      });
+
+      cycleOptionsEl.appendChild(button);
+    });
+  }
+
   function renderCards() {
     cardsContainerEl.innerHTML = "";
 
@@ -994,7 +1151,7 @@
     } else if (count === 1) {
       summaryMsgEl.textContent = "good start 🌷";
       summarySubEl.textContent = mood
-        ? `A ${mood.label} day still gets a tiny win.`
+        ? `A ${mood.label} day still deserves softness.`
         : "One check-in is still care.";
     } else {
       summaryMsgEl.textContent = `${mood.emoji} ${mood.label} day`;
@@ -1046,6 +1203,7 @@
     days.forEach(({ key, date, data }) => {
       const count = completedCount(data);
       const mood = MOODS.find((item) => item.id === data.mood);
+      const cycle = CYCLE_WEEKS.find((item) => item.id === data.cycleWeek);
       const cell = document.createElement("div");
       const status = count === HABITS.length ? "full" : count > 0 ? "partial" : "";
       const weekday = date.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 1);
@@ -1055,21 +1213,23 @@
         <span>${weekday}</span>
         <span class="day-dot">${count === HABITS.length ? "✓" : count || ""}</span>
         <span class="day-mood">${mood ? mood.emoji : ""}</span>
+        <span class="day-cycle">${cycle ? cycle.short.slice(0, 1).toUpperCase() : ""}</span>
       `;
       weekStripEl.appendChild(cell);
     });
   }
 
-  function renderTinyWin() {
+  function renderMessageToFiras() {
     if (document.activeElement !== tinyWinEl) {
-      tinyWinEl.value = todayData.tinyWin || "";
+      tinyWinEl.value = todayData.messageToFiras || "";
     }
   }
 
-  function saveTinyWin(value) {
-    todayData.tinyWin = value.trimStart();
+  function saveMessageToFiras(value) {
+    todayData.messageToFiras = value.trimStart();
+    todayData.tinyWin = todayData.messageToFiras;
     setDay(todayKey(), todayData);
-    saveStateEl.textContent = "saved";
+    saveStateEl.textContent = "saved here";
     window.clearTimeout(saveTimer);
     saveTimer = window.setTimeout(() => {
       saveStateEl.textContent = "";
@@ -1077,19 +1237,67 @@
     renderWeek();
   }
 
+  function buildFirasUpdate() {
+    const mood = MOODS.find((item) => item.id === todayData.mood);
+    const cycle = CYCLE_WEEKS.find((item) => item.id === todayData.cycleWeek);
+    const doneHabits = HABITS
+      .filter((habit) => todayData[habit.id])
+      .map((habit) => habit.title)
+      .join(", ");
+
+    return [
+      `Larain's check-in for ${formatDate()}`,
+      `Mood: ${mood ? `${mood.emoji} ${mood.label}` : "not picked"}`,
+      `Cycle week: ${cycle ? `${cycle.emoji} ${cycle.label} (${cycle.short})` : "not picked"}`,
+      `Checks: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : ""}`,
+      `Message to Firas: ${todayData.messageToFiras || "(empty)"}`,
+    ].join("\n");
+  }
+
+  async function shareUpdateForFiras() {
+    const text = buildFirasUpdate();
+
+    try {
+      if (navigator.share) {
+        await navigator.share({ title: "Larain's check-in", text });
+        saveStateEl.textContent = "shared";
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(text);
+        saveStateEl.textContent = "copied for Firas";
+      } else {
+        const helper = document.createElement("textarea");
+        helper.value = text;
+        document.body.appendChild(helper);
+        helper.select();
+        document.execCommand("copy");
+        helper.remove();
+        saveStateEl.textContent = "copied for Firas";
+      }
+    } catch {
+      saveStateEl.textContent = "copy did not work";
+    }
+
+    window.clearTimeout(saveTimer);
+    saveTimer = window.setTimeout(() => {
+      saveStateEl.textContent = "";
+    }, 1800);
+  }
+
   function renderAll() {
     renderOverview();
     renderMood();
+    renderCycle();
     renderCards();
     renderSummary();
-    renderTinyWin();
+    renderMessageToFiras();
     renderWeek();
   }
 
   dateEl.textContent = formatDate();
   loveNoteEl.textContent = noteForToday();
   scheduleNoteRefresh();
-  tinyWinEl.addEventListener("input", (event) => saveTinyWin(event.target.value));
+  tinyWinEl.addEventListener("input", (event) => saveMessageToFiras(event.target.value));
+  shareButtonEl.addEventListener("click", shareUpdateForFiras);
   renderAll();
 </script>
 </body>
