@@ -154,7 +154,6 @@
   .mini-panel,
   .summary,
   .mood-card,
-  .cycle-card,
   .tiny-win,
   .week-panel {
     border: 1px solid rgba(255, 255, 255, 0.72);
@@ -217,14 +216,12 @@
     transition: width 250ms ease;
   }
 
-  .mood-card,
-  .cycle-card {
+  .mood-card {
     margin-bottom: 14px;
     padding: 14px;
   }
 
-  .mood-head,
-  .cycle-head {
+  .mood-head {
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -232,22 +229,19 @@
     margin-bottom: 12px;
   }
 
-  .mood-selected,
-  .cycle-selected {
+  .mood-selected {
     color: var(--rose);
     font-size: 13px;
     font-weight: 800;
   }
 
-  .mood-options,
-  .cycle-options {
+  .mood-options {
     display: grid;
     grid-template-columns: repeat(4, minmax(0, 1fr));
     gap: 8px;
   }
 
-  .mood-button,
-  .cycle-button {
+  .mood-button {
     min-height: 72px;
     padding: 9px 6px;
     border: 1px solid rgba(216, 79, 127, 0.16);
@@ -258,39 +252,27 @@
   }
 
   .mood-button:hover,
-  .cycle-button:hover,
   .habit-card:hover {
     transform: translateY(-1px);
   }
 
-  .mood-button[aria-pressed="true"],
-  .cycle-button[aria-pressed="true"] {
+  .mood-button[aria-pressed="true"] {
     border-color: rgba(216, 79, 127, 0.5);
     background: linear-gradient(135deg, rgba(255, 224, 235, 0.92), rgba(205, 238, 230, 0.86));
     box-shadow: 0 8px 18px rgba(117, 62, 91, 0.12);
   }
 
-  .mood-emoji,
-  .cycle-emoji {
+  .mood-emoji {
     display: block;
     font-size: 24px;
   }
 
-  .mood-name,
-  .cycle-name {
+  .mood-name {
     display: block;
     margin-top: 4px;
     color: var(--ink);
     font-size: 12px;
     font-weight: 800;
-  }
-
-  .cycle-detail {
-    margin: 10px 0 0;
-    color: var(--muted);
-    font-size: 12.5px;
-    font-weight: 600;
-    line-height: 1.35;
   }
 
   .habit-list {
@@ -312,8 +294,7 @@
   }
 
   .habit-card:active,
-  .mood-button:active,
-  .cycle-button:active {
+  .mood-button:active {
     transform: scale(0.99);
   }
 
@@ -545,15 +526,6 @@
     font-size: 13px;
   }
 
-  .day-cycle {
-    display: block;
-    min-height: 13px;
-    margin-top: 1px;
-    color: var(--muted);
-    font-size: 10px;
-    font-weight: 800;
-  }
-
   .footer-note {
     margin-top: 24px;
     color: var(--rose);
@@ -607,8 +579,7 @@
       grid-template-columns: 1fr;
     }
 
-    .mood-options,
-    .cycle-options {
+    .mood-options {
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
@@ -694,15 +665,6 @@
       <div class="mood-options" id="moodOptions"></div>
     </section>
 
-    <section class="cycle-card" aria-label="Cycle week check-in">
-      <div class="cycle-head">
-        <div class="panel-label">cycle week</div>
-        <div class="cycle-selected" id="cycleSelected">not picked yet</div>
-      </div>
-      <div class="cycle-options" id="cycleOptions"></div>
-      <p class="cycle-detail" id="cycleDetail">Pick this only if you want the note to match your body week.</p>
-    </section>
-
     <section class="habit-list" id="cardsContainer" aria-label="Daily check-in list"></section>
 
     <section class="summary" id="summary" aria-live="polite">
@@ -744,13 +706,6 @@
     { id: "brave", emoji: "🧸", label: "brave" },
   ];
 
-  const CYCLE_WEEKS = [
-    { id: "period", emoji: "🌧️", label: "rough", short: "week 1", detail: "Rough week: rest, warmth, snacks, and zero pressure." },
-    { id: "follicular", emoji: "🌱", label: "bloom", short: "week 2", detail: "Bloom week: gentle momentum, fresh starts, and easy wins." },
-    { id: "ovulation", emoji: "☀️", label: "radiant", short: "week 3", detail: "Radiant week: confidence, connection, and being seen." },
-    { id: "luteal", emoji: "🌙", label: "tender", short: "week 4", detail: "Tender week: extra patience, reassurance, and fewer expectations." },
-  ];
-
   const DATED_NOTES = {
     // Add a date like "2026-06-14": "Your message for that day.",
   };
@@ -788,37 +743,6 @@
     "You are loved on purpose, not by accident.",
   ];
 
-  const CYCLE_NOTES = {
-    period: [
-      "If your body needs the softer version of today, I am still proud of you.",
-      "Rest counts. Warmth counts. Let today ask less from you.",
-      "You do not owe the day your strongest self.",
-      "I hope you feel held, cared for, and allowed to slow down.",
-      "Be extra gentle with yourself. I love you through every version of today.",
-    ],
-    follicular: [
-      "Fresh-start energy looks beautiful on you, even when it is tiny.",
-      "One small step is enough momentum for today.",
-      "I love watching you become excited about your own life.",
-      "Let today be light, curious, and kind to you.",
-      "You can begin again without carrying yesterday on your shoulders.",
-    ],
-    ovulation: [
-      "You are allowed to take up space and be fully seen.",
-      "Your brightness is one of my favorite things about you.",
-      "I love your confidence, your warmth, and the way you light up a room.",
-      "Go be your beautiful self. I am already cheering.",
-      "You are magnetic without even trying.",
-    ],
-    luteal: [
-      "If everything feels louder today, I will be softer with you.",
-      "You deserve patience before productivity.",
-      "Nothing about you is too much for me.",
-      "Let the day be smaller if it needs to be. You are still doing enough.",
-      "I trust your feelings, and I am here with you through them.",
-    ],
-  };
-
   const NOTE_SWITCH_HOUR = 8;
   const STORAGE_KEY = "larain-tracker-v1";
   const habitIds = HABITS.map((habit) => habit.id);
@@ -832,9 +756,6 @@
   const progressCopyEl = document.getElementById("progressCopy");
   const moodOptionsEl = document.getElementById("moodOptions");
   const moodSelectedEl = document.getElementById("moodSelected");
-  const cycleOptionsEl = document.getElementById("cycleOptions");
-  const cycleSelectedEl = document.getElementById("cycleSelected");
-  const cycleDetailEl = document.getElementById("cycleDetail");
   const cardsContainerEl = document.getElementById("cardsContainer");
   const summaryEl = document.getElementById("summary");
   const summaryMsgEl = document.getElementById("summaryMsg");
@@ -855,7 +776,6 @@
       freezer: false,
       homework: false,
       mood: "",
-      cycleWeek: "",
       messageToFiras: "",
       tinyWin: "",
     };
@@ -922,28 +842,26 @@
   }
 
   function noteForToday() {
-    const cycleDate = noteCycleDate();
-    const key = keyForDate(cycleDate);
+    const noteDate = noteRotationDate();
+    const key = keyForDate(noteDate);
     if (DATED_NOTES[key]) return DATED_NOTES[key];
 
-    const start = new Date(cycleDate.getFullYear(), 0, 0);
-    const diff = cycleDate - start;
+    const start = new Date(noteDate.getFullYear(), 0, 0);
+    const diff = noteDate - start;
     const dayOfYear = Math.floor(diff / 86400000);
-    const cycleNotes = CYCLE_NOTES[todayData.cycleWeek];
-    const notePool = cycleNotes || LOVE_NOTES;
-    return notePool[dayOfYear % notePool.length];
+    return LOVE_NOTES[dayOfYear % LOVE_NOTES.length];
   }
 
-  function noteCycleDate() {
+  function noteRotationDate() {
     const now = new Date();
-    const cycleDate = new Date(now);
+    const noteDate = new Date(now);
 
     if (now.getHours() < NOTE_SWITCH_HOUR) {
-      cycleDate.setDate(cycleDate.getDate() - 1);
+      noteDate.setDate(noteDate.getDate() - 1);
     }
 
-    cycleDate.setHours(0, 0, 0, 0);
-    return cycleDate;
+    noteDate.setHours(0, 0, 0, 0);
+    return noteDate;
   }
 
   function scheduleNoteRefresh() {
@@ -1030,37 +948,6 @@
       });
 
       moodOptionsEl.appendChild(button);
-    });
-  }
-
-  function renderCycle() {
-    const selectedCycle = CYCLE_WEEKS.find((cycle) => cycle.id === todayData.cycleWeek);
-    cycleSelectedEl.textContent = selectedCycle ? `${selectedCycle.emoji} ${selectedCycle.label}` : "not picked yet";
-    cycleDetailEl.textContent = selectedCycle
-      ? selectedCycle.detail
-      : "Pick this only if you want the note to match your body week.";
-    cycleOptionsEl.innerHTML = "";
-
-    CYCLE_WEEKS.forEach((cycle) => {
-      const button = document.createElement("button");
-      button.type = "button";
-      button.className = "cycle-button";
-      button.setAttribute("aria-pressed", String(todayData.cycleWeek === cycle.id));
-      button.setAttribute("aria-label", `Cycle ${cycle.label}: ${cycle.short}`);
-      button.innerHTML = `
-        <span class="cycle-emoji" aria-hidden="true">${cycle.emoji}</span>
-        <span class="cycle-name">${cycle.label}</span>
-      `;
-
-      button.addEventListener("click", () => {
-        todayData.cycleWeek = todayData.cycleWeek === cycle.id ? "" : cycle.id;
-        setDay(todayKey(), todayData);
-        loveNoteEl.textContent = noteForToday();
-        playTone("mood");
-        renderAll();
-      });
-
-      cycleOptionsEl.appendChild(button);
     });
   }
 
@@ -1203,7 +1090,6 @@
     days.forEach(({ key, date, data }) => {
       const count = completedCount(data);
       const mood = MOODS.find((item) => item.id === data.mood);
-      const cycle = CYCLE_WEEKS.find((item) => item.id === data.cycleWeek);
       const cell = document.createElement("div");
       const status = count === HABITS.length ? "full" : count > 0 ? "partial" : "";
       const weekday = date.toLocaleDateString("en-US", { weekday: "short" }).slice(0, 1);
@@ -1213,7 +1099,6 @@
         <span>${weekday}</span>
         <span class="day-dot">${count === HABITS.length ? "✓" : count || ""}</span>
         <span class="day-mood">${mood ? mood.emoji : ""}</span>
-        <span class="day-cycle">${cycle ? cycle.label.slice(0, 1).toUpperCase() : ""}</span>
       `;
       weekStripEl.appendChild(cell);
     });
@@ -1239,7 +1124,6 @@
 
   function buildFirasUpdate() {
     const mood = MOODS.find((item) => item.id === todayData.mood);
-    const cycle = CYCLE_WEEKS.find((item) => item.id === todayData.cycleWeek);
     const doneHabits = HABITS
       .filter((habit) => todayData[habit.id])
       .map((habit) => habit.title)
@@ -1248,7 +1132,6 @@
     return [
       `Larain's check-in for ${formatDate()}`,
       `Mood: ${mood ? `${mood.emoji} ${mood.label}` : "not picked"}`,
-      `Cycle week: ${cycle ? `${cycle.emoji} ${cycle.label} (${cycle.short})` : "not picked"}`,
       `Checks: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : ""}`,
       `Message to Firas: ${todayData.messageToFiras || "(empty)"}`,
     ].join("\n");
@@ -1286,7 +1169,6 @@
   function renderAll() {
     renderOverview();
     renderMood();
-    renderCycle();
     renderCards();
     renderSummary();
     renderMessageToFiras();
