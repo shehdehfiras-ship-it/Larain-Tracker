@@ -676,7 +676,7 @@
       <label for="tinyWin">message to Firas</label>
       <textarea id="tinyWin" maxlength="220" placeholder="write me anything you want me to know"></textarea>
       <div class="share-row">
-        <button class="share-button" type="button" id="shareButton">Copy update for Firas</button>
+        <button class="share-button" type="button" id="shareButton">Copy for Firas</button>
         <div class="save-state" id="saveState" aria-live="polite"></div>
       </div>
     </section>
@@ -1124,6 +1124,7 @@
 
   function buildFirasUpdate() {
     const mood = MOODS.find((item) => item.id === todayData.mood);
+    const streak = computeStreak();
     const doneHabits = HABITS
       .filter((habit) => todayData[habit.id])
       .map((habit) => habit.title)
@@ -1132,6 +1133,7 @@
     return [
       `Larain's check-in for ${formatDate()}`,
       `Mood: ${mood ? `${mood.emoji} ${mood.label}` : "not picked"}`,
+      `Streak: ${streak === 1 ? "1 day" : `${streak} days`}`,
       `Checks: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : ""}`,
       `Message to Firas: ${todayData.messageToFiras || "(empty)"}`,
     ].join("\n");
