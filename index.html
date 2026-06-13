@@ -267,6 +267,14 @@
     font-size: 32px;
   }
 
+  .mood-name {
+    display: block;
+    margin-top: 5px;
+    color: var(--ink);
+    font-size: 12px;
+    font-weight: 800;
+  }
+
   .habit-list {
     display: grid;
     gap: 10px;
@@ -936,6 +944,7 @@
       button.setAttribute("aria-label", `Today feels ${mood.label}`);
       button.innerHTML = `
         <span class="mood-emoji" aria-hidden="true">${mood.emoji}</span>
+        <span class="mood-name">${mood.label}</span>
       `;
 
       button.addEventListener("click", () => {
@@ -1131,10 +1140,9 @@
 
     return [
       `Larain's check-in for ${formatDate()}`,
-      `Mood: ${mood ? `${mood.emoji} ${mood.label}` : "not picked"}`,
+      `How she feels today: ${mood ? `${mood.label} ${mood.emoji}` : "not picked"}`,
       `Streak: ${streak === 1 ? "1 day" : `${streak} days`}`,
-      `Checks: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : ""}`,
-      `Message to Firas: ${todayData.messageToFiras || "(empty)"}`,
+      `Tasks accomplished: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : " - none yet"}`,
     ].join("\n");
   }
 
