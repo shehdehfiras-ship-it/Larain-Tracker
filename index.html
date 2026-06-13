@@ -1143,6 +1143,7 @@
       `How she feels today: ${mood ? `${mood.label} ${mood.emoji}` : "not picked"}`,
       `Streak: ${streak === 1 ? "1 day" : `${streak} days`}`,
       `Tasks accomplished: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : " - none yet"}`,
+      `Note to Firas: ${todayData.messageToFiras || "(empty)"}`,
     ].join("\n");
   }
 
