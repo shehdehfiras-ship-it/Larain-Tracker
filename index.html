@@ -242,7 +242,7 @@
   }
 
   .mood-button {
-    min-height: 72px;
+    min-height: 86px;
     padding: 9px 6px;
     border: 1px solid rgba(216, 79, 127, 0.16);
     border-radius: 8px;
@@ -273,6 +273,14 @@
     color: var(--ink);
     font-size: 12px;
     font-weight: 800;
+  }
+
+  .mood-sub {
+    display: block;
+    margin-top: 2px;
+    color: var(--muted);
+    font-size: 10.5px;
+    font-weight: 700;
   }
 
   .habit-list {
@@ -659,7 +667,7 @@
 
     <section class="mood-card" aria-label="Mood check-in">
       <div class="mood-head">
-        <div class="panel-label">today feels</div>
+        <div class="panel-label">today felt</div>
         <div class="mood-selected" id="moodSelected">not picked yet</div>
       </div>
       <div class="mood-options" id="moodOptions"></div>
@@ -700,10 +708,10 @@
   ];
 
   const MOODS = [
-    { id: "rough", emoji: "🌧️", label: "rough" },
-    { id: "fresh", emoji: "🌸", label: "fresh" },
-    { id: "radiant", emoji: "🩷", label: "radiant" },
-    { id: "tender", emoji: "🧸", label: "tender" },
+    { id: "productive", emoji: "✅", label: "Productive", sub: "focused" },
+    { id: "refreshing", emoji: "🫧", label: "Refreshing", sub: "recharged" },
+    { id: "dynamic", emoji: "⚡", label: "Dynamic", sub: "fast-paced" },
+    { id: "chill", emoji: "🧸", label: "Chill", sub: "unwound" },
   ];
 
   const DATED_NOTES = {
@@ -932,7 +940,7 @@
 
   function renderMood() {
     const selectedMood = MOODS.find((mood) => mood.id === todayData.mood);
-    moodSelectedEl.textContent = selectedMood ? selectedMood.emoji : "not picked yet";
+    moodSelectedEl.textContent = selectedMood ? `${selectedMood.emoji} ${selectedMood.label}` : "not picked yet";
     moodOptionsEl.innerHTML = "";
 
     MOODS.forEach((mood) => {
@@ -941,10 +949,11 @@
       button.className = "mood-button";
       button.title = mood.label;
       button.setAttribute("aria-pressed", String(todayData.mood === mood.id));
-      button.setAttribute("aria-label", `Today feels ${mood.label}`);
+      button.setAttribute("aria-label", `Today felt ${mood.label}`);
       button.innerHTML = `
         <span class="mood-emoji" aria-hidden="true">${mood.emoji}</span>
         <span class="mood-name">${mood.label}</span>
+        <span class="mood-sub">${mood.sub}</span>
       `;
 
       button.addEventListener("click", () => {
@@ -1049,7 +1058,7 @@
         ? "A day like this still deserves softness."
         : "One check-in is still care.";
     } else {
-      summaryMsgEl.textContent = `${mood.emoji} day`;
+      summaryMsgEl.textContent = `${mood.label} day ${mood.emoji}`;
       summarySubEl.textContent = "No pressure. Just a little check-in with yourself.";
     }
   }
@@ -1140,7 +1149,7 @@
 
     return [
       `Larain's check-in for ${formatDate()}`,
-      `How she feels today: ${mood ? `${mood.label} ${mood.emoji}` : "not picked"}`,
+      `How her day felt: ${mood ? `${mood.label} ${mood.emoji}` : "not picked"}`,
       `Streak: ${streak === 1 ? "1 day" : `${streak} days`}`,
       `Tasks accomplished: ${completedCount(todayData)}/${HABITS.length}${doneHabits ? ` - ${doneHabits}` : " - none yet"}`,
       `Note to Firas: ${todayData.messageToFiras || "(empty)"}`,
